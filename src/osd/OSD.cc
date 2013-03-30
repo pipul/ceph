@@ -2118,7 +2118,7 @@ void OSDService::check_nearfull_warning(const osd_stat_t &osd_stat)
 
   if (cur_state != new_state) {
     cur_state = new_state;
-  } else if (now - last_msg < g_conf->osd_op_complaint_time) {
+  } else if (now - last_msg < g_conf->op_tracker_complaint_time) { //
     return;
   }
   last_msg = now;
