@@ -1,8 +1,8 @@
 include $(top_srcdir)/src/common.mk
 
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = common librados ocf java
-DIST_SUBDIRS = common librados gtest ocf libs3 java
+SUBDIRS = common os librados ocf java
+DIST_SUBDIRS = common os librados gtest ocf libs3 java
 
 EXTRA_DIST = \
 	libs3/COPYING \
@@ -58,21 +58,21 @@ check-local:
 # monitor
 ceph_mon_SOURCES = ceph_mon.cc common/TextTable.cc
 ceph_mon_LDFLAGS = $(AM_LDFLAGS)
-ceph_mon_LDADD = libmon.a $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_mon_LDADD = libmon.a $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_mon_CXXFLAGS = ${CRYPTO_CXXFLAGS} ${AM_CXXFLAGS}
 bin_PROGRAMS += ceph-mon
 
 ceph_mon_store_converter_SOURCES =  mon_store_converter.cc \
 			       mon/MonitorStore.cc
 ceph_mon_store_converter_LDFLAGS = ${AM_LDFLAGS}
-ceph_mon_store_converter_LDADD =  $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_mon_store_converter_LDADD =  $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_mon_store_converter_CXXFLAGS = ${AM_CXXFLAGS}
 bin_PROGRAMS += ceph_mon_store_converter
 
 
 # osd
 ceph_osd_SOURCES = ceph_osd.cc
-ceph_osd_LDADD = libosd.a libosdc.la $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_osd_LDADD = libosd.a libosdc.la $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_osd_CXXFLAGS = ${AM_CXXFLAGS}
 bin_PROGRAMS += ceph-osd
 
@@ -95,7 +95,7 @@ ceph_authtool_SOURCES = ceph_authtool.cc
 ceph_authtool_LDADD = $(LIBGLOBAL_LDA)
 ceph_filestore_dump_SOURCES = tools/ceph-filestore-dump.cc
 ceph_filestore_dump_SOURCES += perfglue/disabled_heap_profiler.cc
-ceph_filestore_dump_LDADD = libosd.a libosdc.la $(LIBOS_LDA) $(LIBGLOBAL_LDA) -lboost_program_options
+ceph_filestore_dump_LDADD = libosd.a libosdc.la $(builddir)/os/libos.la $(LIBGLOBAL_LDA) -lboost_program_options
 if LINUX
 ceph_filestore_dump_LDADD += -ldl
 endif
@@ -104,14 +104,14 @@ bin_PROGRAMS += ceph-conf ceph-authtool ceph_filestore_dump
 ceph_osdomap_tool_SOURCES = tools/ceph-osdomap-tool.cc \
 			  os/LevelDBStore.cc
 ceph_osdomap_tool_LDFLAGS = ${AM_LDFLAGS}
-ceph_osdomap_tool_LDADD =  $(LIBOS_LDA) $(LIBGLOBAL_LDA) -lboost_program_options
+ceph_osdomap_tool_LDADD =  $(builddir)/os/libos.la $(LIBGLOBAL_LDA) -lboost_program_options
 ceph_osdomap_tool_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph-osdomap-tool
 
 ceph_monstore_tool_SOURCES = tools/ceph-monstore-tool.cc \
 			  os/LevelDBStore.cc
 ceph_monstore_tool_LDFLAGS = ${AM_LDFLAGS}
-ceph_monstore_tool_LDADD =  $(LIBOS_LDA) $(LIBGLOBAL_LDA) -lboost_program_options
+ceph_monstore_tool_LDADD =  $(builddir)/os/libos.la $(LIBGLOBAL_LDA) -lboost_program_options
 ceph_monstore_tool_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph-monstore-tool
 
@@ -135,7 +135,7 @@ ceph_dencoder_LDADD = $(LIBGLOBAL_LDA) libcls_lock_client.a \
 			  libcls_rgw_client.a \
 			  libcls_replica_log_client.a \
 			  libcls_refcount_client.a \
-			  libosd.a libmds.a libosdc.la $(LIBOS_LDA) libmon.a
+			  libosd.a libmds.a libosdc.la $(builddir)/os/libos.la libmon.a
 bin_PROGRAMS += ceph-dencoder
 
 mount_ceph_SOURCES = mount/mount.ceph.c common/armor.c common/safe_io.c common/secret.c include/addr_parsing.c
@@ -224,15 +224,15 @@ bin_DEBUGPROGRAMS += ceph_test_ioctls
 
 ceph_dupstore_SOURCES = dupstore.cc
 ceph_dupstore_CXXFLAGS= ${CRYPTO_CXXFLAGS} ${AM_CXXFLAGS}
-ceph_dupstore_LDADD = $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_dupstore_LDADD = $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_streamtest_SOURCES = streamtest.cc
 ceph_streamtest_CXXFLAGS= ${CRYPTO_CXXFLAGS} ${AM_CXXFLAGS}
-ceph_streamtest_LDADD = $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_streamtest_LDADD = $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 bin_DEBUGPROGRAMS += ceph_dupstore ceph_streamtest
 
 ceph_test_trans_SOURCES = test_trans.cc
 ceph_test_trans_CXXFLAGS= ${CRYPTO_CXXFLAGS} ${AM_CXXFLAGS}
-ceph_test_trans_LDADD = $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_test_trans_LDADD = $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 bin_DEBUGPROGRAMS += ceph_test_trans
 
 ceph_test_rados_SOURCES = test/osd/TestRados.cc test/osd/TestOpStat.cc test/osd/Object.cc  test/osd/RadosModel.cc
@@ -244,12 +244,12 @@ ceph_smalliobench_LDADD = $(builddir)/librados/librados.la -lboost_program_optio
 bin_DEBUGPROGRAMS += ceph_smalliobench
 
 ceph_smalliobenchfs_SOURCES = test/bench/small_io_bench_fs.cc test/bench/testfilestore_backend.cc test/bench/detailed_stat_collector.cc test/bench/bencher.cc
-ceph_smalliobenchfs_LDADD = $(builddir)/librados/librados.la -lboost_program_options $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_smalliobenchfs_LDADD = $(builddir)/librados/librados.la -lboost_program_options $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_smalliobenchfs_CXXFLAGS = ${CRYPTO_CXXFLAGS} ${AM_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_smalliobenchfs
 
 ceph_smalliobenchdumb_SOURCES = test/bench/small_io_bench_dumb.cc test/bench/dumb_backend.cc test/bench/detailed_stat_collector.cc test/bench/bencher.cc
-ceph_smalliobenchdumb_LDADD = $(builddir)/librados/librados.la -lboost_program_options $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_smalliobenchdumb_LDADD = $(builddir)/librados/librados.la -lboost_program_options $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_smalliobenchdumb_CXXFLAGS = ${CRYPTO_CXXFLAGS} ${AM_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_smalliobenchdumb
 
@@ -258,7 +258,7 @@ ceph_smalliobenchrbd_LDADD = $(builddir)/librados/librados.la librbd.la -lboost_
 bin_DEBUGPROGRAMS += ceph_smalliobenchrbd
 
 ceph_tpbench_SOURCES = test/bench/tp_bench.cc test/bench/detailed_stat_collector.cc
-ceph_tpbench_LDADD = $(builddir)/librados/librados.la -lboost_program_options $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_tpbench_LDADD = $(builddir)/librados/librados.la -lboost_program_options $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 bin_DEBUGPROGRAMS += ceph_tpbench
 
 ceph_omapbench_SOURCES = test/omap_bench.cc
@@ -804,7 +804,7 @@ check_PROGRAMS += unittest_osd_types
 
 unittest_pglog_SOURCES = test/osd/TestPGLog.cc perfglue/disabled_heap_profiler.cc
 unittest_pglog_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
-unittest_pglog_LDADD =  libosd.a libosdc.la $(LIBOS_LDA) $(LIBGLOBAL_LDA) ${UNITTEST_LDADD}
+unittest_pglog_LDADD =  libosd.a libosdc.la $(builddir)/os/libos.la $(LIBGLOBAL_LDA) ${UNITTEST_LDADD}
 check_PROGRAMS += unittest_pglog
 
 if LINUX
@@ -886,13 +886,13 @@ check_PROGRAMS += unittest_escape
 
 unittest_chain_xattr_SOURCES = test/filestore/chain_xattr.cc
 unittest_chain_xattr_LDFLAGS = ${AM_LDFLAGS}
-unittest_chain_xattr_LDADD =  ${UNITTEST_STATIC_LDADD} $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+unittest_chain_xattr_LDADD =  ${UNITTEST_STATIC_LDADD} $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 unittest_chain_xattr_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS} ${CRYPTO_CXXFLAGS}
 check_PROGRAMS += unittest_chain_xattr
 
 unittest_flatindex_SOURCES = test/os/TestFlatIndex.cc
 unittest_flatindex_LDFLAGS = ${AM_LDFLAGS}
-unittest_flatindex_LDADD =  ${UNITTEST_STATIC_LDADD} $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+unittest_flatindex_LDADD =  ${UNITTEST_STATIC_LDADD} $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 unittest_flatindex_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS} ${CRYPTO_CXXFLAGS}
 check_PROGRAMS += unittest_flatindex
 
@@ -928,7 +928,7 @@ check_PROGRAMS += unittest_libcephfs_config
 
 unittest_lfnindex_SOURCES = test/os/TestLFNIndex.cc
 unittest_lfnindex_LDFLAGS = ${AM_LDFLAGS}
-unittest_lfnindex_LDADD =  ${UNITTEST_STATIC_LDADD} $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+unittest_lfnindex_LDADD =  ${UNITTEST_STATIC_LDADD} $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 unittest_lfnindex_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS} ${CRYPTO_CXXFLAGS}
 check_PROGRAMS += unittest_lfnindex
 
@@ -1082,7 +1082,7 @@ ceph_test_mon_workloadgen_SOURCES = \
      test/mon/test_mon_workloadgen.cc \
 		 osdc/Objecter.cc \
 		 osdc/Striper.cc
-ceph_test_mon_workloadgen_LDADD = $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_test_mon_workloadgen_LDADD = $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_test_mon_workloadgen_CXXFLAGS = ${CRYPTO_CXXFLAGS} ${AM_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_mon_workloadgen
 
@@ -1160,7 +1160,7 @@ bin_DEBUGPROGRAMS += ceph_test_libcephfs
 
 ceph_test_filestore_SOURCES = test/filestore/store_test.cc
 ceph_test_filestore_LDFLAGS = ${AM_LDFLAGS}
-ceph_test_filestore_LDADD =  ${UNITTEST_STATIC_LDADD} $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_test_filestore_LDADD =  ${UNITTEST_STATIC_LDADD} $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_test_filestore_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS} ${CRYPTO_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_filestore
 
@@ -1168,12 +1168,12 @@ ceph_test_filestore_workloadgen_SOURCES = \
      test/filestore/workload_generator.cc \
      test/filestore/TestFileStoreState.cc
 ceph_test_filestore_workloadgen_LDFLAGS = ${AM_LDFLAGS}
-ceph_test_filestore_workloadgen_LDADD =  $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_test_filestore_workloadgen_LDADD =  $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_test_filestore_workloadgen_CXXFLAGS =  ${CRYPTO_CXXFLAGS} ${AM_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_filestore_workloadgen
 
 ceph_test_filestore_idempotent_SOURCES = test/filestore/test_idempotent.cc test/filestore/FileStoreTracker.cc test/common/ObjectContents.cc
-ceph_test_filestore_idempotent_LDADD = $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_test_filestore_idempotent_LDADD = $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_test_filestore_idempotent_CXXFLAGS = $(AM_CXXFLAGS)
 bin_DEBUGPROGRAMS += ceph_test_filestore_idempotent
 
@@ -1183,18 +1183,18 @@ ceph_test_filestore_idempotent_sequence_SOURCES = \
      test/filestore/TestFileStoreState.cc \
      test/filestore/FileStoreDiff.cc
 ceph_test_filestore_idempotent_sequence_CXXFLAGS = ${CRYPTO_CXXFLAGS} ${AM_CXXFLAGS}
-ceph_test_filestore_idempotent_sequence_LDADD = $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_test_filestore_idempotent_sequence_LDADD = $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 bin_DEBUGPROGRAMS += ceph_test_filestore_idempotent_sequence
 
 ceph_xattr_bench_SOURCES = test/xattr_bench.cc
 ceph_xattr_bench_LDFLAGS = ${AM_LDFLAGS}
-ceph_xattr_bench_LDADD =  ${UNITTEST_STATIC_LDADD} $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_xattr_bench_LDADD =  ${UNITTEST_STATIC_LDADD} $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_xattr_bench_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}  ${CRYPTO_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_xattr_bench
 
 ceph_test_filejournal_SOURCES = test/test_filejournal.cc
 ceph_test_filejournal_LDFLAGS = ${AM_LDFLAGS}
-ceph_test_filejournal_LDADD =  ${UNITTEST_STATIC_LDADD} $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_test_filejournal_LDADD =  ${UNITTEST_STATIC_LDADD} $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_test_filejournal_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_filejournal
 
@@ -1212,19 +1212,19 @@ bin_DEBUGPROGRAMS += ceph_test_objectcacher_stress
 
 ceph_test_snap_mapper_SOURCES = test/test_snap_mapper.cc osd/SnapMapper.cc
 ceph_test_snap_mapper_LDFLAGS = ${AM_LDFLAGS}
-ceph_test_snap_mapper_LDADD =  ${UNITTEST_STATIC_LDADD} $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_test_snap_mapper_LDADD =  ${UNITTEST_STATIC_LDADD} $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_test_snap_mapper_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS} $(LEVELDB_INCLUDE) ${CRYPTO_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_snap_mapper
 
 ceph_test_object_map_SOURCES = test/ObjectMap/test_object_map.cc test/ObjectMap/KeyValueDBMemory.cc os/DBObjectMap.cc os/LevelDBStore.cc
 ceph_test_object_map_LDFLAGS = ${AM_LDFLAGS}
-ceph_test_object_map_LDADD =  ${UNITTEST_STATIC_LDADD} $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_test_object_map_LDADD =  ${UNITTEST_STATIC_LDADD} $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_test_object_map_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS} ${CRYPTO_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_object_map
 
 ceph_test_keyvaluedb_atomicity_SOURCES = test/ObjectMap/test_keyvaluedb_atomicity.cc os/LevelDBStore.cc
 ceph_test_keyvaluedb_atomicity_LDFLAGS = ${AM_LDFLAGS}
-ceph_test_keyvaluedb_atomicity_LDADD =  ${UNITTEST_STATIC_LDADD} $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_test_keyvaluedb_atomicity_LDADD =  ${UNITTEST_STATIC_LDADD} $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_test_keyvaluedb_atomicity_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS} ${CRYPTO_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_keyvaluedb_atomicity
 
@@ -1232,14 +1232,14 @@ ceph_test_keyvaluedb_iterators_SOURCES = test/ObjectMap/test_keyvaluedb_iterator
                                     test/ObjectMap/KeyValueDBMemory.cc \
                                     os/LevelDBStore.cc
 ceph_test_keyvaluedb_iterators_LDFLAGS = ${AM_LDFLAGS}
-ceph_test_keyvaluedb_iterators_LDADD =  ${UNITTEST_STATIC_LDADD} $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_test_keyvaluedb_iterators_LDADD =  ${UNITTEST_STATIC_LDADD} $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_test_keyvaluedb_iterators_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS} ${CRYPTO_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_keyvaluedb_iterators
 
 ceph_test_store_tool_SOURCES = test/ObjectMap/test_store_tool/test_store_tool.cc \
 			  os/LevelDBStore.cc
 ceph_test_store_tool_LDFLAGS = ${AM_LDFLAGS}
-ceph_test_store_tool_LDADD =  $(LIBOS_LDA) $(LIBGLOBAL_LDA)
+ceph_test_store_tool_LDADD =  $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_test_store_tool_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_store_tool
 
@@ -1470,31 +1470,6 @@ libmds_a_SOURCES = \
 	mds/MDLog.cc \
 	osdc/Journaler.cc
 noinst_LIBRARIES += libmds.a
-
-libos_a_SOURCES = \
-	os/FileJournal.cc \
-	os/FileStore.cc \
-	os/chain_xattr.cc \
-	os/ObjectStore.cc \
-	os/JournalingObjectStore.cc \
-	os/LFNIndex.cc \
-	os/HashIndex.cc \
-	os/IndexManager.cc \
-	os/FlatIndex.cc \
-	os/DBObjectMap.cc \
-	os/LevelDBStore.cc \
-	os/WBThrottle.cc \
-	os/BtrfsFileStoreBackend.cc \
-	os/GenericFileStoreBackend.cc \
-	os/ZFSFileStoreBackend.cc
-libos_a_CXXFLAGS= ${AM_CXXFLAGS}
-noinst_LIBRARIES += libos.a
-
-if WITH_LIBZFS
-libos_zfs_a_SOURCES = os/ZFS.cc
-libos_zfs_a_CXXFLAGS= ${AM_CXXFLAGS} ${LIBZFS_CFLAGS}
-noinst_LIBRARIES += libos_zfs.a
-endif
 
 libosd_a_SOURCES = \
 	osd/PG.cc \
@@ -1913,26 +1888,6 @@ noinst_HEADERS = \
         msg/SimpleMessenger.h\
         msg/msg_types.h\
 	objclass/objclass.h\
-	os/btrfs_ioctl.h\
-	os/ZFS.h\
-	os/chain_xattr.h\
-	os/hobject.h \
-	os/CollectionIndex.h\
-        os/FileJournal.h\
-        os/FileStore.h\
-        os/BtrfsFileStoreBackend.h\
-        os/GenericFileStoreBackend.h\
-        os/ZFSFileStoreBackend.h\
-	os/FlatIndex.h\
-	os/HashIndex.h\
-	os/FDCache.h\
-	os/WBThrottle.h\
-	os/IndexManager.h\
-        os/Journal.h\
-        os/JournalingObjectStore.h\
-	os/LFNIndex.h\
-        os/ObjectStore.h\
-	os/SequencerPosition.h\
         osd/Ager.h\
 	osd/ClassHandler.h\
         osd/OSD.h\
@@ -2042,11 +1997,7 @@ noinst_HEADERS = \
         test/system/st_rados_watch.h \
         test/system/systest_runnable.h \
         test/system/systest_settings.h \
-        test/unit.h \
-	os/ObjectMap.h \
-	os/DBObjectMap.h \
-	os/KeyValueDB.h \
-	os/LevelDBStore.h
+        test/unit.h
 
 if ENABLE_COVERAGE
 COV_DIR = $(DESTDIR)$(libdir)/ceph/coverage

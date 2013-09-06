@@ -11,19 +11,6 @@ endif
 
 LIBGLOBAL_LDA = libglobal.la $(PTHREAD_LIBS) -lm $(CRYPTO_LIBS) $(EXTRALIBS)
 
-LIBOS_LDA = libos.a
-
-if WITH_LIBAIO
-LIBOS_LDA += -laio
-endif
-
-if WITH_LIBZFS
-LIBOS_LDA += libos_zfs.a -lzfs
-endif
-
-# use system leveldb
-LIBOS_LDA += -lleveldb -lsnappy
-
 AM_COMMON_FLAGS = \
 	-D__CEPH__ \
 	-D_FILE_OFFSET_BITS=64 \
