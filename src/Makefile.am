@@ -1,8 +1,8 @@
 include $(top_srcdir)/src/common.mk
 
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = common os osd osdc librados mds ocf java
-DIST_SUBDIRS = common os osd osdc librados mds gtest ocf libs3 java
+SUBDIRS = common os mon osd osdc librados mds ocf java
+DIST_SUBDIRS = common os mon osd osdc librados mds gtest ocf libs3 java
 
 EXTRA_DIST = \
 	libs3/COPYING \
@@ -58,7 +58,7 @@ check-local:
 # monitor
 ceph_mon_SOURCES = ceph_mon.cc common/TextTable.cc
 ceph_mon_LDFLAGS = $(AM_LDFLAGS)
-ceph_mon_LDADD = libmon.a $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
+ceph_mon_LDADD = $(builddir)/mon/libmon.a $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_mon_CXXFLAGS = ${CRYPTO_CXXFLAGS} ${AM_CXXFLAGS}
 bin_PROGRAMS += ceph-mon
 
@@ -135,7 +135,7 @@ ceph_dencoder_LDADD = $(LIBGLOBAL_LDA) libcls_lock_client.a \
 			  libcls_rgw_client.a \
 			  libcls_replica_log_client.a \
 			  libcls_refcount_client.a \
-			  $(builddir)/osd/libosd.la $(builddir)/mds/libmds.a $(builddir)/osdc/libosdc.la $(builddir)/os/libos.la libmon.a
+			  $(builddir)/osd/libosd.la $(builddir)/mds/libmds.a $(builddir)/osdc/libosdc.la $(builddir)/os/libos.la $(builddir)/mon/libmon.a
 bin_PROGRAMS += ceph-dencoder
 
 mount_ceph_SOURCES = mount/mount.ceph.c common/armor.c common/safe_io.c common/secret.c include/addr_parsing.c
@@ -481,7 +481,7 @@ ceph_test_crypto_CXXFLAGS = ${AM_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_crypto
 
 ceph_test_keys_SOURCES = testkeys.cc
-ceph_test_keys_LDADD = libmon.a $(LIBGLOBAL_LDA) 
+ceph_test_keys_LDADD = $(builddir)/mon/libmon.a $(LIBGLOBAL_LDA)
 ceph_test_keys_CXXFLAGS = ${AM_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_keys
 
@@ -1410,34 +1410,6 @@ libglobal_la_CXXFLAGS= ${AM_CXXFLAGS}
 libglobal_la_LIBADD= $(builddir)/common/libcommon.la
 noinst_LTLIBRARIES += libglobal.la
 
-
-libmon_a_SOURCES = \
-	auth/cephx/CephxKeyServer.cc \
-	auth/cephx/CephxServiceHandler.cc \
-	auth/cephx/CephxSessionHandler.cc \
-	auth/AuthServiceHandler.cc \
-	auth/AuthSessionHandler.cc \
-	mon/Monitor.cc \
-	mon/Paxos.cc \
-	mon/PaxosService.cc \
-	mon/OSDMonitor.cc \
-	mon/MDSMonitor.cc \
-	mon/MonmapMonitor.cc \
-	mon/PGMonitor.cc \
-	mon/PGMap.cc \
-	mon/LogMonitor.cc \
-	mon/AuthMonitor.cc \
-	mon/Elector.cc \
-	mon/MonitorStore.cc \
-	os/LevelDBStore.cc \
-	mon/HealthMonitor.cc \
-	mon/DataHealthService.cc \
-	mon/ConfigKeyService.cc \
-	common/util.cc \
-	common/TextTable.cc
-libmon_a_CXXFLAGS= ${AM_CXXFLAGS}
-noinst_LIBRARIES += libmon.a
-
 libclient_la_SOURCES = \
 	client/Client.cc \
 	client/Inode.cc \
@@ -1743,30 +1715,6 @@ noinst_HEADERS = \
 	messages/MTimeCheck.h\
         messages/MWatchNotify.h\
 	messages/PaxosServiceMessage.h\
-	mon/AuthMonitor.h\
-        mon/DataHealthService.h\
-        mon/Elector.h\
-	mon/LogMonitor.h\
-	mon/ConfigKeyService.h\
-        mon/HealthMonitor.h\
-        mon/HealthService.h\
-        mon/MDSMonitor.h\
-	mon/MonmapMonitor.h\
-        mon/MonCap.h\
-        mon/MonClient.h\
-	mon/MonCommands.h\
-        mon/MonMap.h\
-        mon/Monitor.h\
-	mon/MonitorStore.h\
-        mon/MonitorDBStore.h\
-        mon/OSDMonitor.h\
-        mon/PGMap.h\
-        mon/PGMonitor.h\
-        mon/Paxos.h\
-        mon/PaxosService.h\
-	mon/QuorumService.h\
-        mon/Session.h\
-        mon/mon_types.h\
 	mount/canonicalize.c\
 	mount/mtab.c\
 	msg/Accepter.h\
