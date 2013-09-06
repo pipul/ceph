@@ -603,6 +603,7 @@ AC_CONFIG_FILES([Makefile
     src/cls/statelog/Makefile
     src/cls/version/Makefile
     src/key_value_store/Makefile
+    src/librbd/Makefile
 	src/test/Makefile
 	src/test/system/Makefile
 	src/ocf/Makefile

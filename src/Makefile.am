@@ -1,8 +1,8 @@
 include $(top_srcdir)/src/common.mk
 
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = common os mon osd osdc librados mds client global cls key_value_store ocf java test
-DIST_SUBDIRS = common os mon osd osdc librados mds client global cls key_value_store gtest ocf libs3 java test
+SUBDIRS = common os mon osd osdc librados mds client global cls key_value_store librbd ocf java test
+DIST_SUBDIRS = common os mon osd osdc librados mds client global cls key_value_store librbd gtest ocf libs3 java test
 
 if WITH_RADOSGW
 SUBDIRS += rgw
@@ -179,7 +179,7 @@ ceph_fuse_CXXFLAGS = ${AM_CXXFLAGS}
 bin_PROGRAMS += ceph-fuse
 
 rbd_fuse_SOURCES = rbd_fuse/rbd-fuse.c
-rbd_fuse_LDADD = -lfuse $(builddir)/librados/librados.la librbd.la $(LIBGLOBAL_LDA)
+rbd_fuse_LDADD = -lfuse $(builddir)/librados/librados.la $(builddir)/librbd/librbd.la $(LIBGLOBAL_LDA)
 rbd_fuse_CXXFLAGS = ${AM_CXXFLAGS}
 bin_PROGRAMS += rbd-fuse
 
@@ -259,7 +259,7 @@ ceph_smalliobenchdumb_CXXFLAGS = ${CRYPTO_CXXFLAGS} ${AM_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_smalliobenchdumb
 
 ceph_smalliobenchrbd_SOURCES = test/bench/small_io_bench_rbd.cc test/bench/rbd_backend.cc test/bench/detailed_stat_collector.cc test/bench/bencher.cc
-ceph_smalliobenchrbd_LDADD = $(builddir)/librados/librados.la librbd.la -lboost_program_options $(LIBGLOBAL_LDA)
+ceph_smalliobenchrbd_LDADD = $(builddir)/librados/librados.la $(builddir)/librbd/librbd.la -lboost_program_options $(LIBGLOBAL_LDA)
 bin_DEBUGPROGRAMS += ceph_smalliobenchrbd
 
 ceph_tpbench_SOURCES = test/bench/tp_bench.cc test/bench/detailed_stat_collector.cc
@@ -362,30 +362,6 @@ bin_DEBUGPROGRAMS += ceph_rgw_jsonparser
 
 endif
 
-# librbd
-librbd_la_SOURCES = \
-	librbd/librbd.cc \
-	librbd/AioCompletion.cc \
-	librbd/AioRequest.cc \
-	cls/rbd/cls_rbd_client.cc \
-	librbd/ImageCtx.cc \
-	librbd/internal.cc \
-	librbd/LibrbdWriteback.cc \
-	librbd/WatchCtx.cc \
-	osdc/ObjectCacher.cc \
-	osdc/Striper.cc \
-	librados/snap_set_diff.cc \
-	cls/lock/cls_lock_client.cc \
-	cls/lock/cls_lock_types.cc \
-	cls/lock/cls_lock_ops.cc \
-	common/util.cc
-librbd_la_CFLAGS = ${AM_CFLAGS} ${CRYPTO_CFLAGS}
-librbd_la_CXXFLAGS = ${AM_CXXFLAGS}
-librbd_la_LIBADD = $(builddir)/librados/librados.la
-librbd_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0 \
-	-export-symbols-regex '^rbd_.*' $(PTHREAD_LIBS) $(EXTRALIBS) 
-lib_LTLIBRARIES += librbd.la
-
 rados_SOURCES = rados.cc rados_import.cc rados_export.cc rados_sync.cc common/obj_bencher.cc
 rados_LDADD = $(builddir)/cls/lock/libcls_lock_client.a $(builddir)/librados/librados.la $(LIBGLOBAL_LDA)
 bin_PROGRAMS += rados
@@ -417,7 +393,7 @@ bin_DEBUGPROGRAMS += ceph_scratchtool ceph_scratchtoolpp ceph_radosacl
 
 rbd_SOURCES = rbd.cc common/secret.c common/TextTable.cc common/util.cc
 rbd_CXXFLAGS = ${AM_CXXFLAGS}
-rbd_LDADD = librbd.la $(builddir)/librados/librados.la $(LIBGLOBAL_LDA) -lkeyutils
+rbd_LDADD = $(builddir)/librbd/librbd.la $(builddir)/librados/librados.la $(LIBGLOBAL_LDA) -lkeyutils
 if LINUX
 bin_PROGRAMS += rbd
 endif
@@ -790,12 +766,12 @@ bin_DEBUGPROGRAMS += ceph_test_cls_rgw_opstate
 endif
 
 ceph_test_librbd_SOURCES = test/librbd/test_librbd.cc test/librados/test.cc
-ceph_test_librbd_LDADD =  librbd.la $(builddir)/librados/librados.la ${UNITTEST_STATIC_LDADD}
+ceph_test_librbd_LDADD =  $(builddir)/librbd/librbd.la $(builddir)/librados/librados.la ${UNITTEST_STATIC_LDADD}
 ceph_test_librbd_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_librbd
 
 ceph_test_librbd_fsx_SOURCES = test/librbd/fsx.c
-ceph_test_librbd_fsx_LDADD =  librbd.la $(builddir)/librados/librados.la -lm
+ceph_test_librbd_fsx_LDADD =  $(builddir)/librbd/librbd.la $(builddir)/librados/librados.la -lm
 ceph_test_librbd_fsx_CFLAGS = ${AM_CFLAGS} -Wno-format
 bin_DEBUGPROGRAMS += ceph_test_librbd_fsx
 
