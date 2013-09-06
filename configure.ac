@@ -602,6 +602,7 @@ AC_CONFIG_HEADERS([src/acconfig.h])
 AC_CONFIG_FILES([Makefile
 	src/Makefile
 	src/common/Makefile
+	src/librados/Makefile
 	src/ocf/Makefile
 	src/ocf/ceph
 	src/ocf/rbd

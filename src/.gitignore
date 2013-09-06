@@ -3,7 +3,7 @@ Makefile
 
 # local directory specific entries
 /.git_version
-/.libs
+.libs
 /acconfig.h*
 /ceph
 /cephfs
