@@ -296,7 +296,7 @@ bin_DEBUGPROGRAMS += ceph_test_librgw_build
 
 ceph_test_libcephfs_build_SOURCES = test/test_libcommon_build.cc $(libcommon_files) \
 			    $($(builddir)/osdc/libosdc.la_SOURCES)
-ceph_test_libcephfs_build_LDADD = libcephfs.la -lexpat $(PTHREAD_LIBS) -lm $(CRYPTO_LIBS) $(EXTRALIBS)
+ceph_test_libcephfs_build_LDADD = $(builddir)/client/libcephfs.la -lexpat $(PTHREAD_LIBS) -lm $(CRYPTO_LIBS) $(EXTRALIBS)
 ceph_test_libcephfs_build_CXXFLAGS = $(AM_CXXFLAGS)
 bin_DEBUGPROGRAMS += ceph_test_libcephfs_build
 endif
@@ -304,16 +304,6 @@ endif
 ##########
 BUILT_SOURCES =
 lib_LTLIBRARIES = 
-
-# libcephfs
-libcephfs_la_SOURCES = \
-	libcephfs.cc
-libcephfs_la_CFLAGS= ${CRYPTO_CFLAGS} ${AM_CFLAGS}
-libcephfs_la_CXXFLAGS= ${AM_CXXFLAGS}
-libcephfs_la_LIBADD = $(builddir)/client/libclient.la
-libcephfs_la_LDFLAGS =  $(PTHREAD_LIBS) $(CRYPTO_LIBS) $(EXTRALIBS) \
-            ${AM_LDFLAGS} -version-info 1:0:0 -export-symbols-regex '^ceph_.*'
-lib_LTLIBRARIES += libcephfs.la
 
 ceph_test_timers_SOURCES = test/TestTimers.cc
 ceph_test_timers_LDADD = $(LIBGLOBAL_LDA)
@@ -458,7 +448,7 @@ libcephfs_jni_la_SOURCES = \
 	java/native/ScopedLocalRef.h \
 	java/native/JniConstants.cpp \
 	java/native/JniConstants.h
-libcephfs_jni_la_LIBADD = libcephfs.la $(EXTRALIBS)
+libcephfs_jni_la_LIBADD = $(builddir)/client/libcephfs.la $(EXTRALIBS)
 libcephfs_jni_la_CPPFLAGS = $(JDK_CPPFLAGS)
 libcephfs_jni_la_CXXFLAGS = ${AM_CXXFLAGS}
 libcephfs_jni_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0
@@ -516,7 +506,7 @@ UNITTEST_STATIC_LDADD = \
 UNITTEST_LDADD = ${UNITTEST_STATIC_LDADD}
 
 unittest_encoding_SOURCES = test/encoding.cc
-unittest_encoding_LDADD = libcephfs.la $(builddir)/librados/librados.la $(PTHREAD_LIBS) -lm \
+unittest_encoding_LDADD = $(builddir)/client/libcephfs.la $(builddir)/librados/librados.la $(PTHREAD_LIBS) -lm \
 			  ${UNITTEST_LDADD}
 unittest_encoding_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS} \
 		     -fno-strict-aliasing
@@ -580,7 +570,7 @@ check_PROGRAMS += unittest_throttle
 
 unittest_base64_SOURCES = test/base64.cc
 unittest_base64_LDFLAGS = $(PTHREAD_CFLAGS) ${AM_LDFLAGS}
-unittest_base64_LDADD = libcephfs.la -lm ${UNITTEST_LDADD}
+unittest_base64_LDADD = $(builddir)/client/libcephfs.la -lm ${UNITTEST_LDADD}
 unittest_base64_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 check_PROGRAMS += unittest_base64
 
@@ -610,7 +600,7 @@ unittest_gather_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 check_PROGRAMS += unittest_gather
 
 unittest_run_cmd_SOURCES = test/run_cmd.cc
-unittest_run_cmd_LDADD = libcephfs.la ${UNITTEST_LDADD}
+unittest_run_cmd_LDADD = $(builddir)/client/libcephfs.la ${UNITTEST_LDADD}
 unittest_run_cmd_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 check_PROGRAMS += unittest_run_cmd
 
@@ -620,7 +610,7 @@ unittest_signals_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 check_PROGRAMS += unittest_signals
 
 unittest_simple_spin_SOURCES = test/simple_spin.cc
-unittest_simple_spin_LDADD = libcephfs.la ${UNITTEST_LDADD}
+unittest_simple_spin_LDADD = $(builddir)/client/libcephfs.la ${UNITTEST_LDADD}
 unittest_simple_spin_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 check_PROGRAMS += unittest_simple_spin
 
@@ -715,7 +705,7 @@ check_PROGRAMS += unittest_formatter
 
 unittest_libcephfs_config_SOURCES = test/libcephfs_config.cc
 unittest_libcephfs_config_LDFLAGS = $(PTHREAD_CFLAGS) ${AM_LDFLAGS}
-unittest_libcephfs_config_LDADD =  libcephfs.la ${UNITTEST_LDADD}
+unittest_libcephfs_config_LDADD =  $(builddir)/client/libcephfs.la ${UNITTEST_LDADD}
 unittest_libcephfs_config_CXXFLAGS = ${CRYPTO_CFLAGS} ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 check_PROGRAMS += unittest_libcephfs_config
 
@@ -947,7 +937,7 @@ bin_DEBUGPROGRAMS += ceph_test_rados_api_lock
 
 ceph_test_libcephfs_SOURCES = test/libcephfs/test.cc test/libcephfs/readdir_r_cb.cc test/libcephfs/caps.cc test/libcephfs/multiclient.cc
 ceph_test_libcephfs_LDFLAGS = $(PTHREAD_CFLAGS) ${AM_LDFLAGS}
-ceph_test_libcephfs_LDADD =  ${UNITTEST_STATIC_LDADD} libcephfs.la
+ceph_test_libcephfs_LDADD =  ${UNITTEST_STATIC_LDADD} $(builddir)/client/libcephfs.la
 ceph_test_libcephfs_CXXFLAGS = $(AM_CXXFLAGS) ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_libcephfs
 
