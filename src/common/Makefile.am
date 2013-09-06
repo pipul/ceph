@@ -198,15 +198,6 @@ libcommon_la_SOURCES = \
 	$(top_srcdir)/src/include/ceph_frag.cc \
 	$(top_srcdir)/src/include/addr_parsing.c
 
-libcommon_la_SOURCES += \
-	$(top_srcdir)/src/crush/builder.c \
-	$(top_srcdir)/src/crush/mapper.c \
-	$(top_srcdir)/src/crush/crush.c \
-	$(top_srcdir)/src/crush/hash.c \
-	$(top_srcdir)/src/crush/CrushWrapper.cc \
-	$(top_srcdir)/src/crush/CrushCompiler.cc \
-	$(top_srcdir)/src/crush/CrushTester.cc
-
 if WITH_PROFILER
 libcommon_la_SOURCES += $(top_srcdir)/src/perfglue/cpu_profiler.cc
 else
@@ -214,4 +205,4 @@ libcommon_la_SOURCES += $(top_srcdir)/src/perfglue/disabled_stubs.cc
 endif
 
 libcommon_la_CFLAGS = $(CRYPTO_CFLAGS) $(AM_CFLAGS)
-libcommon_la_LIBADD = libcrc.la -lrt -luuid
+libcommon_la_LIBADD = $(top_builddir)/src/crush/libcrush.la libcrc.la -lrt -luuid

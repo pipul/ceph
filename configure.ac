@@ -582,6 +582,7 @@ AM_PATH_PYTHON([2.4],
 AC_CONFIG_HEADERS([src/acconfig.h])
 AC_CONFIG_FILES([Makefile
 	src/Makefile
+	src/crush/Makefile
 	src/common/Makefile
 	src/os/Makefile
 	src/mon/Makefile

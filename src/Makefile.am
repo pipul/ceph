@@ -1,8 +1,8 @@
 include $(top_srcdir)/src/common.mk
 
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = common os mon osd osdc librados mds client global cls key_value_store librbd ocf
-DIST_SUBDIRS = common os mon osd osdc librados mds client global cls key_value_store librbd gtest ocf libs3 java test
+SUBDIRS = crush common os mon osd osdc librados mds client global cls key_value_store librbd ocf
+DIST_SUBDIRS = crush common os mon osd osdc librados mds client global cls key_value_store librbd gtest ocf libs3 java test
 
 if WITH_RADOSGW
 SUBDIRS += rgw
@@ -1194,17 +1194,6 @@ noinst_HEADERS = \
 	bash_completion/radosgw-admin\
 	cls_acl.cc\
 	cls_crypto.cc\
-	crush/CrushCompiler.h\
-	crush/CrushTester.h\
-        crush/CrushWrapper.h\
-        crush/CrushWrapper.i\
-        crush/builder.h\
-        crush/crush.h\
-        crush/grammar.h\
-        crush/hash.h\
-        crush/mapper.h\
-        crush/sample.txt\
-        crush/types.h\
 	fetch_config\
 	include/bloom_filter.hpp\
         include/Context.h\
