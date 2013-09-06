@@ -301,15 +301,6 @@ ceph_test_libcephfs_build_CXXFLAGS = $(AM_CXXFLAGS)
 bin_DEBUGPROGRAMS += ceph_test_libcephfs_build
 endif
 
-if WITH_HADOOPCLIENT
-ceph_test_libhadoopcephfs_build_SOURCES = test/test_libcommon_build.cc \
-         $(libhadoopcephfs_la_SOURCES) \
-	 $($(builddir)/osdc/libosdc.la_SOURCES) $(libcommon_files)
-ceph_test_libhadoopcephfs_build_LDADD = libcephfs.la -lexpat $(PTHREAD_LIBS) -lm $(CRYPTO_LIBS) $(EXTRALIBS)
-ceph_test_libhadoopcephfs_build_CXXFLAGS = $(AM_CXXFLAGS)
-bin_DEBUGPROGRAMS += ceph_test_libhadoopcephfs_build
-endif
-
 ##########
 BUILT_SOURCES =
 lib_LTLIBRARIES = 
@@ -456,18 +447,6 @@ if WITH_TCMALLOC
 ceph_test_keys_LDADD += -ltcmalloc
 ceph_test_keys_CXXFLAGS += ${tcmalloc_safety_flags}
 ceph_test_keys_SOURCES += perfglue/heap_profiler.cc
-endif
-
-## hadoop client
-if WITH_HADOOPCLIENT
-JAVA_BASE = /usr/lib/jvm/java-6-sun
-libhadoopcephfs_la_SOURCES = client/hadoop/CephFSInterface.cc
-libhadoopcephfs_la_LIBADD = libcephfs.la
-libhadoopcephfs_la_CFLAGS = ${AM_CFLAGS}
-libhadoopcephfs_la_CXXFLAGS = ${AM_CXXFLAGS}
-libhadoopcephfs_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0 -export-symbols-regex 'hadoopcephfs_.*'
-lib_LTLIBRARIES += libhadoopcephfs.la
-
 endif
 
 ## CephFS Java Wrappers
