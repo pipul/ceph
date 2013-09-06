@@ -610,6 +610,7 @@ AC_CONFIG_FILES([Makefile
 	src/librados/Makefile
 	src/client/Makefile
 	src/rgw/Makefile
+	src/global/Makefile
 	src/ocf/Makefile
 	src/ocf/ceph
 	src/ocf/rbd

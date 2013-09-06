@@ -1,8 +1,8 @@
 include $(top_srcdir)/src/common.mk
 
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = common os mon osd osdc librados mds client ocf java
-DIST_SUBDIRS = common os mon osd osdc librados mds client gtest ocf libs3 java
+SUBDIRS = common os mon osd osdc librados mds client global ocf java
+DIST_SUBDIRS = common os mon osd osdc librados mds client global gtest ocf libs3 java
 
 if WITH_RADOSGW
 SUBDIRS += rgw
@@ -1368,17 +1368,6 @@ clean-local:
 
 # libs
 
-# global
-libglobal_la_SOURCES = \
-	global/global_context.cc \
-	global/global_init.cc \
-	global/pidfile.cc \
-	global/signal_handler.cc
-libglobal_la_CFLAGS= ${CRYPTO_CFLAGS} ${AM_CFLAGS}
-libglobal_la_CXXFLAGS= ${AM_CXXFLAGS}
-libglobal_la_LIBADD= $(builddir)/common/libcommon.la
-noinst_LTLIBRARIES += libglobal.la
-
 dist-hook:
 	$(srcdir)/check_version $(srcdir)/.git_version
 
@@ -1448,9 +1437,6 @@ noinst_HEADERS = \
 	cls/rgw/cls_rgw_client.h\
 	cls/rgw/cls_rgw_ops.h\
 	cls/rgw/cls_rgw_types.h\
-	global/global_init.h \
-	global/global_context.h \
-        global/signal_handler.h\
 	crush/CrushCompiler.h\
 	crush/CrushTester.h\
         crush/CrushWrapper.h\

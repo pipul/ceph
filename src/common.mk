@@ -9,7 +9,7 @@ if WITH_PROFILER
 EXTRALIBS += -lprofiler
 endif
 
-LIBGLOBAL_LDA = libglobal.la $(PTHREAD_LIBS) -lm $(CRYPTO_LIBS) $(EXTRALIBS)
+LIBGLOBAL_LDA = $(top_builddir)/src/global/libglobal.la $(PTHREAD_LIBS) -lm $(CRYPTO_LIBS) $(EXTRALIBS)
 
 AM_COMMON_FLAGS = \
 	-D__CEPH__ \
