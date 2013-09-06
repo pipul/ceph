@@ -611,6 +611,8 @@ AC_CONFIG_FILES([Makefile
 	src/client/Makefile
 	src/rgw/Makefile
 	src/global/Makefile
+	src/test/Makefile
+	src/test/system/Makefile
 	src/ocf/Makefile
 	src/ocf/ceph
 	src/ocf/rbd

@@ -1,8 +1,8 @@
 include $(top_srcdir)/src/common.mk
 
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = common os mon osd osdc librados mds client global ocf java
-DIST_SUBDIRS = common os mon osd osdc librados mds client global gtest ocf libs3 java
+SUBDIRS = common os mon osd osdc librados mds client global ocf java test
+DIST_SUBDIRS = common os mon osd osdc librados mds client global gtest ocf libs3 java test
 
 if WITH_RADOSGW
 SUBDIRS += rgw
@@ -313,7 +313,6 @@ endif
 ##########
 BUILT_SOURCES =
 lib_LTLIBRARIES = 
-noinst_LTLIBRARIES = 
 noinst_LIBRARIES =
 
 # libcephfs
@@ -633,25 +632,17 @@ libcls_kvs_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0 -export-symbols-regex 
 
 radoslib_LTLIBRARIES += libcls_kvs.la
 
-## System tests
-libsystest_la_SOURCES = \
-	test/system/cross_process_sem.cc \
-	test/system/systest_runnable.cc \
-	test/system/systest_settings.cc
-libsystest_la_LIBADD = $(LIBGLOBAL_LDA)
-noinst_LTLIBRARIES += libsystest.la
-
 ceph_test_rados_list_parallel_SOURCES = \
 	test/system/rados_list_parallel.cc \
 	test/system/st_rados_create_pool.cc \
 	test/system/st_rados_list_objects.cc
-ceph_test_rados_list_parallel_LDADD = libsystest.la $(builddir)/librados/librados.la $(PTHREAD_LIBS)
+ceph_test_rados_list_parallel_LDADD = $(builddir)/test/system/libsystest.la $(builddir)/librados/librados.la $(PTHREAD_LIBS)
 bin_DEBUGPROGRAMS += ceph_test_rados_list_parallel
 
 ceph_test_rados_open_pools_parallel_SOURCES = \
 	test/system/rados_open_pools_parallel.cc \
 	test/system/st_rados_create_pool.cc
-ceph_test_rados_open_pools_parallel_LDADD = libsystest.la $(builddir)/librados/librados.la $(PTHREAD_LIBS)
+ceph_test_rados_open_pools_parallel_LDADD = $(builddir)/test/system/libsystest.la $(builddir)/librados/librados.la $(PTHREAD_LIBS)
 bin_DEBUGPROGRAMS += ceph_test_rados_open_pools_parallel
 
 ceph_test_rados_delete_pools_parallel_SOURCES = \
@@ -659,7 +650,7 @@ ceph_test_rados_delete_pools_parallel_SOURCES = \
 	test/system/st_rados_create_pool.cc \
 	test/system/st_rados_delete_pool.cc \
 	test/system/st_rados_list_objects.cc
-ceph_test_rados_delete_pools_parallel_LDADD = libsystest.la $(builddir)/librados/librados.la $(PTHREAD_LIBS)
+ceph_test_rados_delete_pools_parallel_LDADD = $(builddir)/test/system/libsystest.la $(builddir)/librados/librados.la $(PTHREAD_LIBS)
 bin_DEBUGPROGRAMS += ceph_test_rados_delete_pools_parallel
 
 ceph_test_rados_watch_notify_SOURCES = \
@@ -669,7 +660,7 @@ ceph_test_rados_watch_notify_SOURCES = \
 	test/system/st_rados_delete_objs.cc \
 	test/system/st_rados_watch.cc \
 	test/system/st_rados_notify.cc
-ceph_test_rados_watch_notify_LDADD = libsystest.la $(builddir)/librados/librados.la $(PTHREAD_LIBS)
+ceph_test_rados_watch_notify_LDADD = $(builddir)/test/system/libsystest.la $(builddir)/librados/librados.la $(PTHREAD_LIBS)
 bin_DEBUGPROGRAMS += ceph_test_rados_watch_notify
 
 ceph_bench_log_SOURCES = \
@@ -1688,15 +1679,6 @@ noinst_HEADERS = \
         test/osd/RadosModel.h \
         test/osd/TestOpStat.h \
         test/osdc/FakeWriteback.h \
-        test/system/cross_process_sem.h \
-        test/system/st_rados_create_pool.h \
-        test/system/st_rados_list_objects.h \
-        test/system/st_rados_delete_objs.h \
-        test/system/st_rados_delete_pool.h \
-        test/system/st_rados_notify.h \
-        test/system/st_rados_watch.h \
-        test/system/systest_runnable.h \
-        test/system/systest_settings.h \
         test/unit.h
 
 if ENABLE_COVERAGE
