@@ -1,8 +1,8 @@
 include $(top_srcdir)/src/common.mk
 
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = common os librados ocf java
-DIST_SUBDIRS = common os librados gtest ocf libs3 java
+SUBDIRS = common os osd librados ocf java
+DIST_SUBDIRS = common os osd librados gtest ocf libs3 java
 
 EXTRA_DIST = \
 	libs3/COPYING \
@@ -72,7 +72,7 @@ bin_PROGRAMS += ceph_mon_store_converter
 
 # osd
 ceph_osd_SOURCES = ceph_osd.cc
-ceph_osd_LDADD = libosd.a libosdc.la $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
+ceph_osd_LDADD = $(builddir)/osd/libosd.la libosdc.la $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_osd_CXXFLAGS = ${AM_CXXFLAGS}
 bin_PROGRAMS += ceph-osd
 
@@ -95,7 +95,7 @@ ceph_authtool_SOURCES = ceph_authtool.cc
 ceph_authtool_LDADD = $(LIBGLOBAL_LDA)
 ceph_filestore_dump_SOURCES = tools/ceph-filestore-dump.cc
 ceph_filestore_dump_SOURCES += perfglue/disabled_heap_profiler.cc
-ceph_filestore_dump_LDADD = libosd.a libosdc.la $(builddir)/os/libos.la $(LIBGLOBAL_LDA) -lboost_program_options
+ceph_filestore_dump_LDADD = $(builddir)/osd/libosd.la libosdc.la $(builddir)/os/libos.la $(LIBGLOBAL_LDA) -lboost_program_options
 if LINUX
 ceph_filestore_dump_LDADD += -ldl
 endif
@@ -135,7 +135,7 @@ ceph_dencoder_LDADD = $(LIBGLOBAL_LDA) libcls_lock_client.a \
 			  libcls_rgw_client.a \
 			  libcls_replica_log_client.a \
 			  libcls_refcount_client.a \
-			  libosd.a libmds.a libosdc.la $(builddir)/os/libos.la libmon.a
+			  $(builddir)/osd/libosd.la libmds.a libosdc.la $(builddir)/os/libos.la libmon.a
 bin_PROGRAMS += ceph-dencoder
 
 mount_ceph_SOURCES = mount/mount.ceph.c common/armor.c common/safe_io.c common/secret.c include/addr_parsing.c
@@ -804,7 +804,7 @@ check_PROGRAMS += unittest_osd_types
 
 unittest_pglog_SOURCES = test/osd/TestPGLog.cc perfglue/disabled_heap_profiler.cc
 unittest_pglog_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
-unittest_pglog_LDADD =  libosd.a libosdc.la $(builddir)/os/libos.la $(LIBGLOBAL_LDA) ${UNITTEST_LDADD}
+unittest_pglog_LDADD =  $(builddir)/osd/libosd.la libosdc.la $(builddir)/os/libos.la $(LIBGLOBAL_LDA) ${UNITTEST_LDADD}
 check_PROGRAMS += unittest_pglog
 
 if LINUX
@@ -1471,21 +1471,6 @@ libmds_a_SOURCES = \
 	osdc/Journaler.cc
 noinst_LIBRARIES += libmds.a
 
-libosd_a_SOURCES = \
-	osd/PG.cc \
-	osd/PGLog.cc \
-	osd/ReplicatedPG.cc \
-	osd/Ager.cc \
-	osd/OSD.cc \
-	osd/OSDCap.cc \
-	osd/Watch.cc \
-	osd/ClassHandler.cc \
-	osd/OpRequest.cc \
-	osd/SnapMapper.cc \
-	objclass/class_api.cc
-libosd_a_CXXFLAGS = ${AM_CXXFLAGS}
-noinst_LIBRARIES += libosd.a
-
 libosdc_la_SOURCES = \
 	osdc/Objecter.cc \
 	osdc/ObjectCacher.cc \
@@ -1888,19 +1873,6 @@ noinst_HEADERS = \
         msg/SimpleMessenger.h\
         msg/msg_types.h\
 	objclass/objclass.h\
-        osd/Ager.h\
-	osd/ClassHandler.h\
-        osd/OSD.h\
-        osd/OSDCap.h\
-        osd/OSDMap.h\
-        osd/ObjectVersioner.h\
-	osd/OpRequest.h\
-	osd/SnapMapper.h\
-        osd/PG.h\
-        osd/PGLog.h\
-        osd/ReplicatedPG.h\
-        osd/Watch.h\
-        osd/osd_types.h\
         osdc/Blinker.h\
         osdc/Filer.h\
         osdc/Journaler.h\
