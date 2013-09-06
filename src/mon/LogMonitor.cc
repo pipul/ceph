@@ -26,7 +26,7 @@
 #include "common/Timer.h"
 
 #include "osd/osd_types.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/config.h"
 #include "include/assert.h"
 #include "include/str_list.h"

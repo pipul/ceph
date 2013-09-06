@@ -37,7 +37,7 @@
 
 #include "BtrfsFileStoreBackend.h"
 
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/config.h"
 
 #if defined(__linux__)

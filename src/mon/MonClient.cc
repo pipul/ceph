@@ -27,7 +27,7 @@
 #include "messages/MMonSubscribeAck.h"
 #include "common/ConfUtils.h"
 #include "common/ceph_argparse.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/LogClient.h"
 
 #include "MonClient.h"

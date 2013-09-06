@@ -23,7 +23,7 @@
 #include <signal.h>
 #include "os/chain_xattr.h"
 #include "include/Context.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/ceph_argparse.h"
 #include "global/global_init.h"
 #include <gtest/gtest.h>

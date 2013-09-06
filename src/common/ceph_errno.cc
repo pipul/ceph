@@ -1,4 +1,4 @@
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 
 #include <sstream>
 #include <string>

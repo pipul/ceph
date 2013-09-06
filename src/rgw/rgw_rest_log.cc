@@ -18,7 +18,7 @@
 #include "rgw_rest_s3.h"
 #include "rgw_rest_log.h"
 #include "rgw_client_io.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 
 #define LOG_CLASS_LIST_MAX_ENTRIES (1000)
 #define dout_subsys ceph_subsys_rgw

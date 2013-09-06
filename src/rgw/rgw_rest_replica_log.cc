@@ -21,7 +21,7 @@
 #include "rgw_bucket.h"
 #include "rgw_rest_replica_log.h"
 #include "rgw_client_io.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 
 #define dout_subsys ceph_subsys_rgw
 #define REPLICA_INPUT_MAX_LEN (512*1024)

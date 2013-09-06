@@ -16,7 +16,7 @@
 #include "common/perf_counters.h"
 #include "global/pidfile.h"
 #include "common/debug.h"
-#include "common/signal.h"
+#include "common/ceph_signal.h"
 #include "common/config.h"
 
 #include <signal.h>

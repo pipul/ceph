@@ -5,7 +5,7 @@
 
 #include "common/ceph_context.h"
 #include "common/dout.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/Throttle.h"
 #include "cls/lock/cls_lock_client.h"
 #include "include/inttypes.h"

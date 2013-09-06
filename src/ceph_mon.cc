@@ -35,7 +35,7 @@ using namespace std;
 #include "common/ceph_argparse.h"
 #include "common/pick_address.h"
 #include "common/Timer.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/Preforker.h"
 
 #include "global/global_init.h"

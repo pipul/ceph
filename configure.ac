@@ -601,6 +601,7 @@ AM_PATH_PYTHON([2.4],
 AC_CONFIG_HEADERS([src/acconfig.h])
 AC_CONFIG_FILES([Makefile
 	src/Makefile
+	src/common/Makefile
 	src/ocf/Makefile
 	src/ocf/ceph
 	src/ocf/rbd

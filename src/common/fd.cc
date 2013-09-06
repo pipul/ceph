@@ -20,7 +20,7 @@
 #include <errno.h>
 
 #include "debug.h"
-#include "errno.h"
+#include "ceph_errno.h"
 
 void dump_open_fds(CephContext *cct)
 {

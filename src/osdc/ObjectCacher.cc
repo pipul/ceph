@@ -6,7 +6,7 @@
 #include "msg/Messenger.h"
 #include "ObjectCacher.h"
 #include "WritebackHandler.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/perf_counters.h"
 
 #include "include/assert.h"

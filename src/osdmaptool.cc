@@ -23,7 +23,7 @@ using namespace std;
 
 #include "common/config.h"
 
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "osd/OSDMap.h"
 #include "mon/MonMap.h"
 #include "common/ceph_argparse.h"

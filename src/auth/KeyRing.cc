@@ -23,7 +23,7 @@
 #include "common/ConfUtils.h"
 #include "common/config.h"
 #include "common/debug.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "include/str_list.h"
 #include "common/Formatter.h"
 

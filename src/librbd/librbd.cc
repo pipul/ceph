@@ -17,7 +17,7 @@
 
 #include "common/Cond.h"
 #include "common/dout.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/snap_types.h"
 #include "common/perf_counters.h"
 #include "include/Context.h"

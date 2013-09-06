@@ -65,7 +65,7 @@ using namespace std;
 #include "common/Mutex.h"
 #include "common/perf_counters.h"
 #include "common/admin_socket.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 
 #define dout_subsys ceph_subsys_client
 

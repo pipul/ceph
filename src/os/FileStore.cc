@@ -63,7 +63,7 @@
 
 #include "common/Timer.h"
 #include "common/debug.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/run_cmd.h"
 #include "common/safe_io.h"
 #include "common/perf_counters.h"

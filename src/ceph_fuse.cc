@@ -18,7 +18,7 @@
 using namespace std;
 
 #include "common/config.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 
 #include "client/Client.h"
 #include "client/fuse_ll.h"

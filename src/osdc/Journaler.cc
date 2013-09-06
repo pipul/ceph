@@ -17,7 +17,7 @@
 #include "include/Context.h"
 #include "msg/Messenger.h"
 #include "osdc/Journaler.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "include/assert.h"
 
 #define dout_subsys ceph_subsys_journaler

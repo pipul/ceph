@@ -57,7 +57,7 @@
 #include "common/ceph_argparse.h"
 #include "common/Timer.h"
 #include "common/Clock.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/perf_counters.h"
 #include "common/admin_socket.h"
 

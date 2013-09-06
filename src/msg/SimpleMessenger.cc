@@ -21,7 +21,7 @@
 
 #include "common/config.h"
 #include "common/Timer.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "auth/Crypto.h"
 
 #define dout_subsys ceph_subsys_ms

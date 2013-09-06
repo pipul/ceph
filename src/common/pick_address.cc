@@ -20,7 +20,7 @@
 #include "include/ipaddr.h"
 #include "include/str_list.h"
 #include "common/debug.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 
 #define dout_subsys ceph_subsys_
 

@@ -1,5 +1,5 @@
 #include "common/config.h"
-#include "common/signal.h"
+#include "common/ceph_signal.h"
 #include "global/signal_handler.h"
 
 #include "test/unit.h"

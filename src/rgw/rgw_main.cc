@@ -23,7 +23,7 @@
 #include "global/global_init.h"
 #include "global/signal_handler.h"
 #include "common/config.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/WorkQueue.h"
 #include "common/Timer.h"
 #include "common/Throttle.h"

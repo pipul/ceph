@@ -41,7 +41,7 @@ using namespace std;
 #include "global/signal_handler.h"
 
 #include "include/color.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/pick_address.h"
 
 #include "perfglue/heap_profiler.h"

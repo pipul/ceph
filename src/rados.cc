@@ -24,7 +24,7 @@ using namespace librados;
 #include "global/global_init.h"
 #include "common/Cond.h"
 #include "common/debug.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/Formatter.h"
 #include "common/obj_bencher.h"
 #include "mds/inode_backtrace.h"

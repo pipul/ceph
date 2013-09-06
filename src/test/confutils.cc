@@ -13,7 +13,7 @@
  */
 #include "common/ConfUtils.h"
 #include "common/config.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "gtest/gtest.h"
 #include "include/buffer.h"
 

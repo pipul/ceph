@@ -13,7 +13,7 @@ using namespace std;
 #include "common/Formatter.h"
 #include "common/ceph_json.h"
 #include "global/global_init.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "include/utime.h"
 #include "include/str_list.h"
 

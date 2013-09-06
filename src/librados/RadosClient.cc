@@ -24,7 +24,7 @@
 #include "common/ceph_context.h"
 #include "common/config.h"
 #include "common/common_init.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "include/buffer.h"
 #include "include/stringify.h"
 

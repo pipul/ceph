@@ -1,8 +1,8 @@
 include $(top_srcdir)/src/common.mk
 
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = ocf java
-DIST_SUBDIRS = gtest ocf libs3 java
+SUBDIRS = common ocf java
+DIST_SUBDIRS = common gtest ocf libs3 java
 
 EXTRA_DIST = \
 	libs3/COPYING \
@@ -146,7 +146,7 @@ endif
 
 # user tools
 cephfs_SOURCES = cephfs.cc
-cephfs_LDADD = libcommon.la
+cephfs_LDADD = $(builddir)/common/libcommon.la
 bin_PROGRAMS += cephfs
 
 librados_config_SOURCES = librados-config.cc
@@ -212,7 +212,7 @@ ceph_test_mutate_LDADD = librados.la $(LIBGLOBAL_LDA)
 bin_DEBUGPROGRAMS += ceph_test_mutate
 
 ceph_test_rewrite_latency_SOURCES = test/test_rewrite_latency.cc
-ceph_test_rewrite_latency_LDADD = libcommon.la $(PTHREAD_LIBS) -lm $(CRYPTO_LIBS) $(EXTRALIBS)
+ceph_test_rewrite_latency_LDADD = $(builddir)/common/libcommon.la $(PTHREAD_LIBS) -lm $(CRYPTO_LIBS) $(EXTRALIBS)
 bin_DEBUGPROGRAMS += ceph_test_rewrite_latency
 
 ceph_test_msgr_SOURCES = testmsgr.cc
@@ -342,7 +342,7 @@ librados_SOURCES = \
 librados_la_SOURCES = ${librados_SOURCES}
 librados_la_CFLAGS = ${CRYPTO_CFLAGS} ${AM_CFLAGS}
 librados_la_CXXFLAGS = ${AM_CXXFLAGS}
-librados_la_LIBADD = libcommon.la $(PTHREAD_LIBS) $(CRYPTO_LIBS) $(EXTRALIBS)
+librados_la_LIBADD = $(builddir)/common/libcommon.la $(PTHREAD_LIBS) $(CRYPTO_LIBS) $(EXTRALIBS)
 librados_la_LDFLAGS = ${AM_LDFLAGS} -version-info 2:0:0 -export-symbols-regex '^rados_.*'
 lib_LTLIBRARIES += librados.la
 
@@ -722,7 +722,7 @@ bin_DEBUGPROGRAMS += ceph_test_rados_watch_notify
 
 ceph_bench_log_SOURCES = \
 	test/bench_log.cc
-ceph_bench_log_LDADD = libcommon.la $(LIBGLOBAL_LDA)
+ceph_bench_log_LDADD = $(builddir)/common/libcommon.la $(LIBGLOBAL_LDA)
 bin_DEBUGPROGRAMS += ceph_bench_log
 
 ## unit tests
@@ -757,17 +757,17 @@ check_PROGRAMS += unittest_arch
 
 unittest_crc32c_SOURCES = test/common/test_crc32c.cc arch/intel.c arch/neon.c arch/probe.cc
 unittest_crc32c_CXXFLAGS = ${AM_CFLAGS} ${UNITTEST_CXXFLAGS}
-unittest_crc32c_LDADD = libcrc.la ${UNITTEST_LDADD} ${LIBGLOBAL_LDA}
+unittest_crc32c_LDADD = $(builddir)/common/libcrc.la ${UNITTEST_LDADD} ${LIBGLOBAL_LDA}
 check_PROGRAMS += unittest_crc32c
 
 unittest_sharedptr_registry_SOURCES = test/common/test_sharedptr_registry.cc
 unittest_sharedptr_registry_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
-unittest_sharedptr_registry_LDADD = libcommon.la ${LIBGLOBAL_LDA} ${UNITTEST_LDADD}
+unittest_sharedptr_registry_LDADD = $(builddir)/common/libcommon.la ${LIBGLOBAL_LDA} ${UNITTEST_LDADD}
 check_PROGRAMS += unittest_sharedptr_registry
 
 unittest_util_SOURCES = test/common/test_util.cc common/util.cc
 unittest_util_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
-unittest_util_LDADD = libcommon.la $(PTHREAD_LIBS) -lm ${UNITTEST_LDADD} $(CRYPTO_LIBS) $(EXTRALIBS)
+unittest_util_LDADD = $(builddir)/common/libcommon.la $(PTHREAD_LIBS) -lm ${UNITTEST_LDADD} $(CRYPTO_LIBS) $(EXTRALIBS)
 check_PROGRAMS += unittest_util
 
 unittest_workqueue_SOURCES = test/test_workqueue.cc
@@ -792,13 +792,13 @@ check_PROGRAMS += unittest_str_list
 
 unittest_log_SOURCES = log/test.cc common/PrebufferedStreambuf.cc
 unittest_log_LDFLAGS = $(PTHREAD_CFLAGS) ${AM_LDFLAGS}
-unittest_log_LDADD = libcommon.la ${UNITTEST_LDADD}
+unittest_log_LDADD = $(builddir)/common/libcommon.la ${UNITTEST_LDADD}
 unittest_log_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS} -O2
 check_PROGRAMS += unittest_log
 
 unittest_throttle_SOURCES = test/common/Throttle.cc
 unittest_throttle_LDFLAGS = $(PTHREAD_CFLAGS) ${AM_LDFLAGS}
-unittest_throttle_LDADD = libcommon.la ${LIBGLOBAL_LDA} ${UNITTEST_LDADD}
+unittest_throttle_LDADD = $(builddir)/common/libcommon.la ${LIBGLOBAL_LDA} ${UNITTEST_LDADD}
 unittest_throttle_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS} -O2
 check_PROGRAMS += unittest_throttle
 
@@ -816,7 +816,7 @@ check_PROGRAMS += unittest_ceph_argparse
 
 unittest_osd_types_SOURCES = test/test_osd_types.cc
 unittest_osd_types_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
-unittest_osd_types_LDADD = $(LIBGLOBAL_LDA) libcommon.la ${UNITTEST_LDADD} 
+unittest_osd_types_LDADD = $(LIBGLOBAL_LDA) $(builddir)/common/libcommon.la ${UNITTEST_LDADD} 
 check_PROGRAMS += unittest_osd_types
 
 unittest_pglog_SOURCES = test/osd/TestPGLog.cc perfglue/disabled_heap_profiler.cc
@@ -873,7 +873,7 @@ check_PROGRAMS += unittest_perf_counters
 
 unittest_admin_socket_SOURCES = test/admin_socket.cc
 unittest_admin_socket_LDFLAGS = ${AM_LDFLAGS}
-unittest_admin_socket_LDADD =  ${LIBGLOBAL_LDA} ${UNITTEST_LDADD} libcommon.la
+unittest_admin_socket_LDADD =  ${LIBGLOBAL_LDA} ${UNITTEST_LDADD} $(builddir)/common/libcommon.la
 unittest_admin_socket_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 check_PROGRAMS += unittest_admin_socket
 
@@ -1383,6 +1383,8 @@ rados_include_DATA = \
 #	$(srcdir)/crush/mapper.h \
 #	$(srcdir)/crush/types.h
 
+BUILT_SOURCES += ceph_ver.h
+
 FORCE:
 .git_version: FORCE
 	$(srcdir)/check_version $(srcdir)/.git_version
@@ -1414,150 +1416,6 @@ clean-local:
 
 # libs
 
-CCAS = ${srcdir}/yasm-wrapper
-AM_CCASFLAGS = -f elf64
-
-# crc
-libcrc_la_SOURCES = \
-	common/sctp_crc32.c \
-	common/crc32c.cc \
-	common/crc32c_intel_baseline.c \
-	common/crc32c_intel_fast.c
-
-if WITH_GOOD_YASM_ELF64
-libcrc_la_SOURCES += common/crc32c_intel_fast_asm.S
-libcrc_la_LIBTOOLFLAGS = --tag=CC
-endif
-
-noinst_LTLIBRARIES += libcrc.la
-
-# common
-libcommon_la_SOURCES = $(libcommon_files)
-libcommon_la_CFLAGS= ${CRYPTO_CFLAGS} ${AM_CFLAGS}
-libcommon_la_CXXFLAGS= ${AM_CXXFLAGS}
-libcommon_la_LDFLAGS = -lrt
-libcommon_la_LIBADD = libcrc.la
-noinst_LTLIBRARIES += libcommon.la
-
-crush_files = \
-	crush/builder.c \
-	crush/mapper.c \
-	crush/crush.c \
-	crush/hash.c \
-	crush/CrushWrapper.cc \
-	crush/CrushCompiler.cc \
-	crush/CrushTester.cc
-
-# this list ommits the ceph_ver.c file
-libcommon_files = \
-	./ceph_ver.c \
-	arch/probe.cc \
-	arch/intel.c \
-	arch/neon.c \
-	auth/AuthAuthorizeHandler.cc \
-	auth/AuthClientHandler.cc \
-	auth/AuthSessionHandler.cc \
-	auth/AuthMethodList.cc \
-	auth/cephx/CephxAuthorizeHandler.cc \
-	auth/cephx/CephxClientHandler.cc \
-	auth/cephx/CephxProtocol.cc \
-	auth/cephx/CephxSessionHandler.cc \
-	auth/none/AuthNoneAuthorizeHandler.cc \
-	auth/unknown/AuthUnknownAuthorizeHandler.cc \
-	auth/Crypto.cc \
-	auth/KeyRing.cc \
-	auth/RotatingKeyRing.cc \
-	common/DecayCounter.cc \
-	common/LogClient.cc \
-	common/LogEntry.cc \
-	common/PrebufferedStreambuf.cc \
-	common/BackTrace.cc \
-	common/perf_counters.cc \
-	common/Mutex.cc \
-	common/OutputDataSocket.cc \
-	common/admin_socket.cc \
-	common/admin_socket_client.cc \
-	common/cmdparse.cc \
-	common/escape.c \
-	common/Clock.cc \
-	common/Throttle.cc \
-	common/Timer.cc \
-	common/Finisher.cc \
-	common/environment.cc\
-	common/assert.cc \
-        common/run_cmd.cc \
-	common/WorkQueue.cc \
-	common/ConfUtils.cc \
-	common/MemoryModel.cc \
-	common/armor.c \
-	common/fd.cc \
-	common/xattr.c \
-	common/safe_io.c \
-	common/snap_types.cc \
-	common/str_list.cc \
-	common/errno.cc \
-	json_spirit/json_spirit_reader.cpp \
-	json_spirit/json_spirit_writer.cpp \
-	json_spirit/json_spirit_value.cpp \
-	log/Log.cc \
-	log/SubsystemMap.cc \
-	mon/MonCap.cc \
-	mon/MonClient.cc \
-	mon/MonMap.cc \
-	msg/Accepter.cc \
-	msg/DispatchQueue.cc \
-	msg/Message.cc \
-	common/RefCountedObj.cc \
-	msg/Messenger.cc \
-	msg/Pipe.cc \
-	msg/SimpleMessenger.cc \
-	msg/msg_types.cc \
-	os/hobject.cc \
-	osd/OSDMap.cc \
-	osd/osd_types.cc \
-	mds/MDSMap.cc \
-	mds/inode_backtrace.cc \
-	mds/mdstypes.cc \
-	common/blkdev.cc \
-	common/common_init.cc \
-	common/pipe.c \
-	common/ceph_argparse.cc \
-	common/ceph_context.cc \
-	common/buffer.cc \
-	common/code_environment.cc \
-	common/dout.cc \
-	common/signal.cc \
-	common/simple_spin.cc \
-	common/Thread.cc \
-	common/Formatter.cc \
-	common/HeartbeatMap.cc \
-	include/ceph_fs.cc \
-	include/ceph_hash.cc \
-	include/ceph_strings.cc \
-	include/ceph_frag.cc \
-	common/config.cc \
-	common/utf8.c \
-	common/mime.c \
-	common/strtol.cc \
-	common/page.cc \
-	common/lockdep.cc \
-	common/version.cc \
-	common/hex.cc \
-	common/entity_name.cc \
-	common/ceph_crypto.cc \
-	common/ceph_crypto_cms.cc \
-	common/ceph_json.cc \
-	common/ipaddr.cc \
-	common/pick_address.cc \
-	include/addr_parsing.c \
-	$(crush_files)
-
-if WITH_PROFILER
-libcommon_files += perfglue/cpu_profiler.cc
-else
-libcommon_files += perfglue/disabled_stubs.cc
-endif
-
 # global
 libglobal_la_SOURCES = \
 	global/global_context.cc \
@@ -1566,7 +1424,7 @@ libglobal_la_SOURCES = \
 	global/signal_handler.cc
 libglobal_la_CFLAGS= ${CRYPTO_CFLAGS} ${AM_CFLAGS}
 libglobal_la_CXXFLAGS= ${AM_CXXFLAGS}
-libglobal_la_LIBADD= libcommon.la
+libglobal_la_LIBADD= $(builddir)/common/libcommon.la
 noinst_LTLIBRARIES += libglobal.la
 
 
@@ -1676,7 +1534,7 @@ libosdc_la_SOURCES = \
 	osdc/Filer.cc \
 	osdc/Striper.cc
 libosdc_la_CXXFLAGS= ${AM_CXXFLAGS}
-libosdc_la_LIBADD = libcommon.la
+libosdc_la_LIBADD = $(builddir)/common/libcommon.la
 noinst_LTLIBRARIES += libosdc.la
 
 libclient_la_SOURCES = \
@@ -1773,87 +1631,9 @@ noinst_HEADERS = \
 	cls/rgw/cls_rgw_client.h\
 	cls/rgw/cls_rgw_ops.h\
 	cls/rgw/cls_rgw_types.h\
-	common/BackTrace.h\
-	common/RefCountedObj.h\
-	common/HeartbeatMap.h\
-	common/LogClient.h\
-	common/LogEntry.h\
-	common/Preforker.h\
-	common/WorkQueue.h\
-	common/PrioritizedQueue.h\
-	common/ceph_argparse.h\
-	common/ceph_context.h\
-	common/xattr.h\
-	common/blkdev.h\
-	common/compiler_extensions.h\
-	common/debug.h\
-	common/dout.h\
-	common/escape.h\
-	common/fd.h\
-	common/version.h\
-	common/hex.h\
-	common/entity_name.h\
-	common/errno.h\
-	common/environment.h\
-	common/likely.h\
-	common/lockdep.h\
-	common/obj_bencher.h\
-	common/snap_types.h\
-        common/Clock.h\
-        common/Cond.h\
-        common/ConfUtils.h\
-        common/DecayCounter.h\
-        common/Finisher.h\
-	common/Formatter.h\
-        common/perf_counters.h\
-	common/OutputDataSocket.h \
-	common/admin_socket.h \
-	common/admin_socket_client.h \
-	common/shared_cache.hpp \
-	common/tracked_int_ptr.hpp \
-	common/simple_cache.hpp \
-	common/sharedptr_registry.hpp \
-	common/map_cacher.hpp \
-        common/MemoryModel.h\
-        common/Mutex.h\
-	common/PrebufferedStreambuf.h\
-        common/RWLock.h\
-        common/Semaphore.h\
-	common/SimpleRNG.h\
-	common/TextTable.h\
-        common/Thread.h\
-        common/Throttle.h\
-        common/Timer.h\
-	common/TrackedOp.h\
-        common/arch.h\
-        common/armor.h\
 	global/global_init.h \
 	global/global_context.h \
-        common/common_init.h\
-        common/pipe.h\
-	common/code_environment.h \
-        common/signal.h\
         global/signal_handler.h\
-        common/simple_spin.h\
-        common/run_cmd.h\
-	common/safe_io.h\
-        common/config.h\
-        common/config_obs.h\
-	common/config_opts.h\
-	common/ceph_crypto.h\
-	common/ceph_crypto_cms.h\
-	common/ceph_json.h\
-	common/crc32c_intel_baseline.h\
-	common/crc32c_intel_fast.h\
-	common/lru_map.h\
-	common/utf8.h\
-	common/mime.h\
-	common/pick_address.h\
-	common/sctp_crc32.h\
-	common/secret.h\
-	common/strtol.h\
-	common/static_assert.h\
-	common/AsyncReserver.h\
 	crush/CrushCompiler.h\
 	crush/CrushTester.h\
         crush/CrushWrapper.h\
@@ -2251,7 +2031,6 @@ noinst_HEADERS = \
 	test/osd/Object.h\
 	test/osd/TestOpStat.h\
 	global/pidfile.h\
-	common/sync_filesystem.h \
         test/bench/distribution.h \
         test/bench/rados_backend.h \
         test/bench/rbd_backend.h \
@@ -2289,8 +2068,7 @@ noinst_HEADERS = \
 	os/ObjectMap.h \
 	os/DBObjectMap.h \
 	os/KeyValueDB.h \
-	os/LevelDBStore.h \
-	common/cmdparse.h
+	os/LevelDBStore.h
 
 if ENABLE_COVERAGE
 COV_DIR = $(DESTDIR)$(libdir)/ceph/coverage

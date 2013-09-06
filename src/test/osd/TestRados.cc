@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:8; c-basic-offset:2; indent-tabs-mode:t -*-
 #include "common/Mutex.h"
 #include "common/Cond.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/version.h"
 
 #include <iostream>

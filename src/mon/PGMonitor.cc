@@ -43,7 +43,7 @@
 #include "osd/osd_types.h"
 
 #include "common/config.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/strtol.h"
 #include "include/str_list.h"
 #include <sstream>

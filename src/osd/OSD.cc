@@ -114,7 +114,7 @@
 
 #include "auth/AuthAuthorizeHandler.h"
 
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 
 #include "objclass/objclass.h"
 

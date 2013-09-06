@@ -25,7 +25,7 @@
 #include <unistd.h>
 
 #include "rados_sync.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/strtol.h"
 #include "include/rados/librados.hpp"
 

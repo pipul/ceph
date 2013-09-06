@@ -14,7 +14,7 @@
 #include "common/config.h"
 
 #include "auth/KeyRing.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/ceph_argparse.h"
 #include "common/strtol.h"
 #include "global/global_init.h"

@@ -25,7 +25,7 @@
 
 #include "include/assert.h"
 #include "common/Formatter.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 
 class MonitorDBStore
 {

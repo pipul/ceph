@@ -33,7 +33,7 @@
 #include "global/signal_handler.h"
 #include "common/config.h"
 #include "common/debug.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/Cond.h"
 #include "common/Mutex.h"
 #include "common/strtol.h"

@@ -15,7 +15,7 @@
 #include <errno.h>
 
 #include "include/util.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/strtol.h"
 
 // test if an entire buf is zero in 8-byte chunks

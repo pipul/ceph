@@ -4,7 +4,7 @@
 
 #include "common/ceph_json.h"
 
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/Formatter.h"
 #include "common/Throttle.h"
 

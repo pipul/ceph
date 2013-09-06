@@ -15,7 +15,7 @@
 #include <limits.h>
 
 #include "common/config.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/ceph_argparse.h"
 #include "common/common_init.h"
 #include "include/rados/librados.h"

@@ -18,7 +18,7 @@
 
 #include "include/compat.h"
 #include "common/entity_name.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/safe_io.h"
 #include "mds/Dumper.h"
 #include "mds/mdstypes.h"

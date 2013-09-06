@@ -20,7 +20,7 @@
 #include "OSD.h"
 #include "OpRequest.h"
 
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/perf_counters.h"
 
 #include "messages/MOSDOp.h"

@@ -19,9 +19,9 @@
 #include "include/types.h"
 #include "common/entity_name.h"
 #include "common/Clock.h"
-#include "common/signal.h"
+#include "common/ceph_signal.h"
 #include "common/ceph_argparse.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 
 
 #include "msg/Messenger.h"

@@ -16,7 +16,7 @@
 #include "common/admin_socket_client.h"
 #include "common/ceph_context.h"
 #include "common/config.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/safe_io.h"
 
 #include "include/types.h" // FIXME: ordering shouldn't be important, but right 

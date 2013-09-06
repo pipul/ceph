@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "client/ioctl.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 
 using namespace std;
 

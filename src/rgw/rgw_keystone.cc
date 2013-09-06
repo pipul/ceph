@@ -1,7 +1,7 @@
 #include <errno.h>
 #include <fnmatch.h>
 
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/ceph_json.h"
 #include "include/types.h"
 #include "include/str_list.h"

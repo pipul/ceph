@@ -18,7 +18,7 @@
 #include "osdc/Filer.h"
 
 #include "common/config.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "include/assert.h"
 
 #define dout_subsys ceph_subsys_mds

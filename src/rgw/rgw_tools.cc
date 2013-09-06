@@ -1,6 +1,6 @@
 #include <errno.h>
 
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 
 #include "include/types.h"
 

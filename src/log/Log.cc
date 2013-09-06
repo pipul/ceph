@@ -9,7 +9,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/safe_io.h"
 #include "common/Clock.h"
 #include "include/assert.h"

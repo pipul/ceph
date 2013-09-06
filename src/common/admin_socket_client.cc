@@ -14,7 +14,7 @@
 
 #include "common/admin_socket.h"
 #include "common/ceph_context.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/safe_io.h"
 #include "common/admin_socket_client.h"
 

@@ -43,7 +43,7 @@
 #include "msg/Message.h"
 #include "msg/Messenger.h"
 
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/safe_io.h"
 #include "common/perf_counters.h"
 #include "common/MemoryModel.h"

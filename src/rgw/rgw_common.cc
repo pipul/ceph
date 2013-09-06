@@ -9,7 +9,7 @@
 
 #include "common/ceph_crypto.h"
 #include "common/armor.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/Clock.h"
 #include "common/Formatter.h"
 #include "common/perf_counters.h"

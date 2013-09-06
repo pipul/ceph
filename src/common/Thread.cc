@@ -15,7 +15,7 @@
 #include "common/Thread.h"
 #include "common/code_environment.h"
 #include "common/debug.h"
-#include "common/signal.h"
+#include "common/ceph_signal.h"
 
 #include <dirent.h>
 #include <errno.h>

@@ -21,7 +21,7 @@
 #endif
 
 #include <errno.h>
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/dout.h"
 #include "include/assert.h"
 #include "common/Formatter.h"

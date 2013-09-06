@@ -15,7 +15,7 @@
 
 #include "armor.h"
 #include "common/environment.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/safe_io.h"
 #include "common/simple_spin.h"
 #include "include/atomic.h"

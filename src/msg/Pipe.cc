@@ -23,7 +23,7 @@
 #include "SimpleMessenger.h"
 
 #include "common/debug.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 
 // Below included to get encode_encrypt(); That probably should be in Crypto.h, instead
 

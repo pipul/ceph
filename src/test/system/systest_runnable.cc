@@ -12,7 +12,7 @@
  *
  */
 
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "include/atomic.h"
 #include "systest_runnable.h"
 #include "systest_settings.h"

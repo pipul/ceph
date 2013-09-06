@@ -18,7 +18,7 @@
 #include "rgw_rest_s3.h"
 #include "rgw_rest_metadata.h"
 #include "rgw_client_io.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/strtol.h"
 
 #define dout_subsys ceph_subsys_rgw

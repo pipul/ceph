@@ -25,7 +25,7 @@
 #include <unistd.h>
 
 // ceph
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/safe_io.h"
 #include "include/types.h"
 #include "Client.h"

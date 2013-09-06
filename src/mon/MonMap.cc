@@ -10,7 +10,7 @@
 #include "include/ceph_features.h"
 #include "include/addr_parsing.h"
 #include "common/ceph_argparse.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 
 #include "common/dout.h"
 

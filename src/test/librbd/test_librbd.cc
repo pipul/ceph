@@ -32,7 +32,7 @@
 #include <sstream>
 
 #include "test/librados/test.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "include/interval_set.h"
 #include "include/stringify.h"
 

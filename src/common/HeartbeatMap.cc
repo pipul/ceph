@@ -20,7 +20,7 @@
 
 #include "HeartbeatMap.h"
 #include "ceph_context.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 
 #include "debug.h"
 #define dout_subsys ceph_subsys_heartbeatmap

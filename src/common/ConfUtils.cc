@@ -26,7 +26,7 @@
 #include <unistd.h>
 
 #include "include/buffer.h"
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 #include "common/utf8.h"
 #include "common/ConfUtils.h"
 

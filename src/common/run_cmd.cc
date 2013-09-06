@@ -12,7 +12,7 @@
  *
  */
 
-#include "common/errno.h"
+#include "common/ceph_errno.h"
 
 #include <errno.h>
 #include <sstream>
