@@ -1,8 +1,8 @@
 include $(top_srcdir)/src/common.mk
 
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = common os mon osd osdc librados mds ocf java
-DIST_SUBDIRS = common os mon osd osdc librados mds gtest ocf libs3 java
+SUBDIRS = common os mon osd osdc librados mds client ocf java
+DIST_SUBDIRS = common os mon osd osdc librados mds client gtest ocf libs3 java
 
 if WITH_RADOSGW
 SUBDIRS += rgw
@@ -160,7 +160,7 @@ bin_PROGRAMS += librados-config
 
 # synthetic client
 ceph_syn_SOURCES = ceph_syn.cc client/SyntheticClient.cc
-ceph_syn_LDADD = libclient.la $(LIBGLOBAL_LDA)
+ceph_syn_LDADD = $(builddir)/client/libclient.la $(LIBGLOBAL_LDA)
 bin_PROGRAMS += ceph-syn
 
 base: ceph-mon ceph-osd ceph-mds \
@@ -174,7 +174,7 @@ base: ceph-mon ceph-osd ceph-mds \
 # fuse targets?
 if WITH_FUSE
 ceph_fuse_SOURCES = ceph_fuse.cc client/fuse_ll.cc
-ceph_fuse_LDADD = -lfuse libclient.la $(LIBGLOBAL_LDA)
+ceph_fuse_LDADD = -lfuse $(builddir)/client/libclient.la $(LIBGLOBAL_LDA)
 ceph_fuse_CXXFLAGS = ${AM_CXXFLAGS}
 bin_PROGRAMS += ceph-fuse
 
@@ -321,7 +321,7 @@ libcephfs_la_SOURCES = \
 	libcephfs.cc
 libcephfs_la_CFLAGS= ${CRYPTO_CFLAGS} ${AM_CFLAGS}
 libcephfs_la_CXXFLAGS= ${AM_CXXFLAGS}
-libcephfs_la_LIBADD = libclient.la
+libcephfs_la_LIBADD = $(builddir)/client/libclient.la
 libcephfs_la_LDFLAGS =  $(PTHREAD_LIBS) $(CRYPTO_LIBS) $(EXTRALIBS) \
             ${AM_LDFLAGS} -version-info 1:0:0 -export-symbols-regex '^ceph_.*'
 lib_LTLIBRARIES += libcephfs.la
@@ -1379,17 +1379,6 @@ libglobal_la_CXXFLAGS= ${AM_CXXFLAGS}
 libglobal_la_LIBADD= $(builddir)/common/libcommon.la
 noinst_LTLIBRARIES += libglobal.la
 
-libclient_la_SOURCES = \
-	client/Client.cc \
-	client/Inode.cc \
-	client/Dentry.cc \
-	client/MetaRequest.cc \
-	client/ClientSnapRealm.cc \
-	client/MetaSession.cc \
-	client/Trace.cc
-libclient_la_LIBADD = $(builddir)/osdc/libosdc.la $(LIBEDIT_LIBS)
-noinst_LTLIBRARIES += libclient.la
-
 dist-hook:
 	$(srcdir)/check_version $(srcdir)/.git_version
 
@@ -1435,20 +1424,6 @@ noinst_HEADERS = \
 	bash_completion/rados\
 	bash_completion/rbd\
 	bash_completion/radosgw-admin\
-        client/Client.h\
-	client/Dentry.h\
-	client/Dir.h\
-	client/Fh.h\
-	client/Inode.h\
-	client/MetaRequest.h\
-	client/MetaSession.h\
-	client/ClientSnapRealm.h\
-        client/SyntheticClient.h\
-        client/Trace.h\
-        client/fuse_ll.h\
-	client/ioctl.h\
-        client/hadoop/CephFSInterface.h\
-	client/ObjecterWriteback.h\
 	cls_acl.cc\
 	cls_crypto.cc\
 	cls/lock/cls_lock_types.h\
