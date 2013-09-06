@@ -1,13 +1,19 @@
 include $(top_srcdir)/src/common.mk
 
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = common os mon osd osdc librados mds client global cls key_value_store librbd ocf java test
+SUBDIRS = common os mon osd osdc librados mds client global cls key_value_store librbd ocf
 DIST_SUBDIRS = common os mon osd osdc librados mds client global cls key_value_store librbd gtest ocf libs3 java test
 
 if WITH_RADOSGW
 SUBDIRS += rgw
 DIST_SUBDIRS += rgw
 endif
+
+if ENABLE_CEPHFS_JAVA
+SUBDIRS += java
+endif
+
+SUBDIRS += test
 
 EXTRA_DIST = \
 	libs3/COPYING \
@@ -303,7 +309,6 @@ endif
 
 ##########
 BUILT_SOURCES =
-lib_LTLIBRARIES = 
 
 ceph_test_timers_SOURCES = test/TestTimers.cc
 ceph_test_timers_LDADD = $(LIBGLOBAL_LDA)
@@ -413,22 +418,6 @@ if WITH_TCMALLOC
 ceph_test_keys_LDADD += -ltcmalloc
 ceph_test_keys_CXXFLAGS += ${tcmalloc_safety_flags}
 ceph_test_keys_SOURCES += perfglue/heap_profiler.cc
-endif
-
-## CephFS Java Wrappers
-##  - The JNI library is here
-##  - The Java source Makefile.am is in src/java
-if ENABLE_CEPHFS_JAVA
-libcephfs_jni_la_SOURCES = \
-	java/native/libcephfs_jni.cc \
-	java/native/ScopedLocalRef.h \
-	java/native/JniConstants.cpp \
-	java/native/JniConstants.h
-libcephfs_jni_la_LIBADD = $(builddir)/client/libcephfs.la $(EXTRALIBS)
-libcephfs_jni_la_CPPFLAGS = $(JDK_CPPFLAGS)
-libcephfs_jni_la_CXXFLAGS = ${AM_CXXFLAGS}
-libcephfs_jni_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0
-lib_LTLIBRARIES += libcephfs_jni.la
 endif
 
 ceph_test_rados_list_parallel_SOURCES = \

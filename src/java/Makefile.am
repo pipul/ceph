@@ -1,3 +1,5 @@
+include $(top_srcdir)/src/common.mk
+
 # automake technique adapted from OpenMPI Java
 
 JAVA_SRC = \
@@ -23,6 +25,19 @@ JAVA_TEST_SRC = \
 EXTRA_DIST = $(JAVA_SRC) $(JAVA_TEST_SRC)
 
 if ENABLE_CEPHFS_JAVA
+
+lib_LTLIBRARIES = libcephfs_jni.la
+
+libcephfs_jni_la_SOURCES = \
+	native/libcephfs_jni.cc \
+	native/ScopedLocalRef.h \
+	native/JniConstants.cpp \
+	native/JniConstants.h
+
+libcephfs_jni_la_CPPFLAGS = $(JDK_CPPFLAGS)
+libcephfs_jni_la_CXXFLAGS = ${AM_CXXFLAGS}
+libcephfs_jni_la_LIBADD = $(top_builddir)/src/client/libcephfs.la $(EXTRALIBS)
+libcephfs_jni_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0
 
 JAVA_CLASSES = $(JAVA_SRC:java/%.java=%.class)
 # This is dumb -- It might be better to split some work
