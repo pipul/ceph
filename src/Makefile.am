@@ -1,8 +1,8 @@
 include $(top_srcdir)/src/common.mk
 
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = common os osd librados mds ocf java
-DIST_SUBDIRS = common os osd librados mds gtest ocf libs3 java
+SUBDIRS = common os osd osdc librados mds ocf java
+DIST_SUBDIRS = common os osd osdc librados mds gtest ocf libs3 java
 
 EXTRA_DIST = \
 	libs3/COPYING \
@@ -72,7 +72,7 @@ bin_PROGRAMS += ceph_mon_store_converter
 
 # osd
 ceph_osd_SOURCES = ceph_osd.cc
-ceph_osd_LDADD = $(builddir)/osd/libosd.la libosdc.la $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
+ceph_osd_LDADD = $(builddir)/osd/libosd.la $(builddir)/osdc/libosdc.la $(builddir)/os/libos.la $(LIBGLOBAL_LDA)
 ceph_osd_CXXFLAGS = ${AM_CXXFLAGS}
 bin_PROGRAMS += ceph-osd
 
@@ -82,7 +82,7 @@ endif
 
 # mds
 ceph_mds_SOURCES = ceph_mds.cc
-ceph_mds_LDADD = $(builddir)/mds/libmds.a libosdc.la $(LIBGLOBAL_LDA)
+ceph_mds_LDADD = $(builddir)/mds/libmds.a $(builddir)/osdc/libosdc.la $(LIBGLOBAL_LDA)
 bin_PROGRAMS += ceph-mds
 ceph_mds_CXXFLAGS = ${AM_CXXFLAGS}
 
@@ -95,7 +95,7 @@ ceph_authtool_SOURCES = ceph_authtool.cc
 ceph_authtool_LDADD = $(LIBGLOBAL_LDA)
 ceph_filestore_dump_SOURCES = tools/ceph-filestore-dump.cc
 ceph_filestore_dump_SOURCES += perfglue/disabled_heap_profiler.cc
-ceph_filestore_dump_LDADD = $(builddir)/osd/libosd.la libosdc.la $(builddir)/os/libos.la $(LIBGLOBAL_LDA) -lboost_program_options
+ceph_filestore_dump_LDADD = $(builddir)/osd/libosd.la $(builddir)/osdc/libosdc.la $(builddir)/os/libos.la $(LIBGLOBAL_LDA) -lboost_program_options
 if LINUX
 ceph_filestore_dump_LDADD += -ldl
 endif
@@ -135,7 +135,7 @@ ceph_dencoder_LDADD = $(LIBGLOBAL_LDA) libcls_lock_client.a \
 			  libcls_rgw_client.a \
 			  libcls_replica_log_client.a \
 			  libcls_refcount_client.a \
-			  $(builddir)/osd/libosd.la $(builddir)/mds/libmds.a libosdc.la $(builddir)/os/libos.la libmon.a
+			  $(builddir)/osd/libosd.la $(builddir)/mds/libmds.a $(builddir)/osdc/libosdc.la $(builddir)/os/libos.la libmon.a
 bin_PROGRAMS += ceph-dencoder
 
 mount_ceph_SOURCES = mount/mount.ceph.c common/armor.c common/safe_io.c common/secret.c include/addr_parsing.c
@@ -290,7 +290,7 @@ ceph_test_librgw_build_CXXFLAGS = $(AM_CXXFLAGS)
 bin_DEBUGPROGRAMS += ceph_test_librgw_build
 
 ceph_test_libcephfs_build_SOURCES = test/test_libcommon_build.cc $(libcommon_files) \
-			    $(libosdc_la_SOURCES)
+			    $($(builddir)/osdc/libosdc.la_SOURCES)
 ceph_test_libcephfs_build_LDADD = libcephfs.la -lexpat $(PTHREAD_LIBS) -lm $(CRYPTO_LIBS) $(EXTRALIBS)
 ceph_test_libcephfs_build_CXXFLAGS = $(AM_CXXFLAGS)
 bin_DEBUGPROGRAMS += ceph_test_libcephfs_build
@@ -299,7 +299,7 @@ endif
 if WITH_HADOOPCLIENT
 ceph_test_libhadoopcephfs_build_SOURCES = test/test_libcommon_build.cc \
          $(libhadoopcephfs_la_SOURCES) \
-	 $(libosdc_la_SOURCES) $(libcommon_files)
+	 $($(builddir)/osdc/libosdc.la_SOURCES) $(libcommon_files)
 ceph_test_libhadoopcephfs_build_LDADD = libcephfs.la -lexpat $(PTHREAD_LIBS) -lm $(CRYPTO_LIBS) $(EXTRALIBS)
 ceph_test_libhadoopcephfs_build_CXXFLAGS = $(AM_CXXFLAGS)
 bin_DEBUGPROGRAMS += ceph_test_libhadoopcephfs_build
@@ -760,7 +760,7 @@ check_PROGRAMS += unittest_workqueue
 
 unittest_striper_SOURCES = test/test_striper.cc 
 unittest_striper_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
-unittest_striper_LDADD = libosdc.la $(LIBGLOBAL_LDA) ${UNITTEST_LDADD}
+unittest_striper_LDADD = $(builddir)/osdc/libosdc.la $(LIBGLOBAL_LDA) ${UNITTEST_LDADD}
 check_PROGRAMS += unittest_striper
 
 unittest_prebufferedstreambuf_SOURCES = test/test_prebufferedstreambuf.cc common/PrebufferedStreambuf.cc
@@ -804,7 +804,7 @@ check_PROGRAMS += unittest_osd_types
 
 unittest_pglog_SOURCES = test/osd/TestPGLog.cc perfglue/disabled_heap_profiler.cc
 unittest_pglog_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
-unittest_pglog_LDADD =  $(builddir)/osd/libosd.la libosdc.la $(builddir)/os/libos.la $(LIBGLOBAL_LDA) ${UNITTEST_LDADD}
+unittest_pglog_LDADD =  $(builddir)/osd/libosd.la $(builddir)/osdc/libosdc.la $(builddir)/os/libos.la $(LIBGLOBAL_LDA) ${UNITTEST_LDADD}
 check_PROGRAMS += unittest_pglog
 
 if LINUX
@@ -1438,15 +1438,6 @@ libmon_a_SOURCES = \
 libmon_a_CXXFLAGS= ${AM_CXXFLAGS}
 noinst_LIBRARIES += libmon.a
 
-libosdc_la_SOURCES = \
-	osdc/Objecter.cc \
-	osdc/ObjectCacher.cc \
-	osdc/Filer.cc \
-	osdc/Striper.cc
-libosdc_la_CXXFLAGS= ${AM_CXXFLAGS}
-libosdc_la_LIBADD = $(builddir)/common/libcommon.la
-noinst_LTLIBRARIES += libosdc.la
-
 libclient_la_SOURCES = \
 	client/Client.cc \
 	client/Inode.cc \
@@ -1455,7 +1446,7 @@ libclient_la_SOURCES = \
 	client/ClientSnapRealm.cc \
 	client/MetaSession.cc \
 	client/Trace.cc
-libclient_la_LIBADD = libosdc.la $(LIBEDIT_LIBS)
+libclient_la_LIBADD = $(builddir)/osdc/libosdc.la $(LIBEDIT_LIBS)
 noinst_LTLIBRARIES += libclient.la
 
 dist-hook:
@@ -1787,13 +1778,6 @@ noinst_HEADERS = \
         msg/SimpleMessenger.h\
         msg/msg_types.h\
 	objclass/objclass.h\
-        osdc/Blinker.h\
-        osdc/Filer.h\
-        osdc/Journaler.h\
-        osdc/ObjectCacher.h\
-        osdc/Objecter.h\
-	osdc/Striper.h\
-	osdc/WritebackHandler.h\
         perfglue/cpu_profiler.h\
         perfglue/heap_profiler.h\
 	rgw/logrotate.conf\
