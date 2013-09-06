@@ -611,6 +611,17 @@ AC_CONFIG_FILES([Makefile
 	src/client/Makefile
 	src/rgw/Makefile
 	src/global/Makefile
+    src/cls/Makefile
+    src/cls/hello/Makefile
+    src/cls/lock/Makefile
+    src/cls/log/Makefile
+    src/cls/rbd/Makefile
+    src/cls/refcount/Makefile
+    src/cls/replica_log/Makefile
+    src/cls/rgw/Makefile
+    src/cls/statelog/Makefile
+    src/cls/version/Makefile
+    src/key_value_store/Makefile
 	src/test/Makefile
 	src/test/system/Makefile
 	src/ocf/Makefile

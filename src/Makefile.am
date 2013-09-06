@@ -1,8 +1,8 @@
 include $(top_srcdir)/src/common.mk
 
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = common os mon osd osdc librados mds client global ocf java test
-DIST_SUBDIRS = common os mon osd osdc librados mds client global gtest ocf libs3 java test
+SUBDIRS = common os mon osd osdc librados mds client global cls key_value_store ocf java test
+DIST_SUBDIRS = common os mon osd osdc librados mds client global cls key_value_store gtest ocf libs3 java test
 
 if WITH_RADOSGW
 SUBDIRS += rgw
@@ -136,10 +136,10 @@ rgw_dencoder_src = rgw/rgw_dencoder.cc \
 
 ceph_dencoder_SOURCES = test/encoding/ceph_dencoder.cc ${rgw_dencoder_src} perfglue/disabled_heap_profiler.cc
 ceph_dencoder_CXXFLAGS = ${AM_CXXFLAGS}
-ceph_dencoder_LDADD = $(LIBGLOBAL_LDA) libcls_lock_client.a \
-			  libcls_rgw_client.a \
-			  libcls_replica_log_client.a \
-			  libcls_refcount_client.a \
+ceph_dencoder_LDADD = $(LIBGLOBAL_LDA) $(builddir)/cls/lock/libcls_lock_client.a \
+			  $(builddir)/cls/rgw/libcls_rgw_client.a \
+			  $(builddir)/cls/replica_log/libcls_replica_log_client.a \
+			  $(builddir)/cls/refcount/libcls_refcount_client.a \
 			  $(builddir)/osd/libosd.la $(builddir)/mds/libmds.a $(builddir)/osdc/libosdc.la $(builddir)/os/libos.la $(builddir)/mon/libmon.a
 bin_PROGRAMS += ceph-dencoder
 
@@ -313,7 +313,6 @@ endif
 ##########
 BUILT_SOURCES =
 lib_LTLIBRARIES = 
-noinst_LIBRARIES =
 
 # libcephfs
 libcephfs_la_SOURCES = \
@@ -338,9 +337,9 @@ if WITH_RADOSGW
 # rgw
 
 my_radosgw_ldadd = \
-       $(builddir)/rgw/librgw.a $(builddir)/librados/librados.la libcls_rgw_client.a libcls_log_client.a \
-       libcls_statelog_client.a libcls_replica_log_client.a libcls_lock_client.a \
-       libcls_refcount_client.a libcls_version_client.a -lcurl -lexpat \
+       $(builddir)/rgw/librgw.a $(builddir)/librados/librados.la $(builddir)/cls/rgw/libcls_rgw_client.a $(builddir)/cls/log/libcls_log_client.a \
+       $(builddir)/cls/statelog/libcls_statelog_client.a $(builddir)/cls/replica_log/libcls_replica_log_client.a $(builddir)/cls/lock/libcls_lock_client.a \
+       $(builddir)/cls/refcount/libcls_refcount_client.a $(builddir)/cls/version/libcls_version_client.a -lcurl -lexpat \
        $(PTHREAD_LIBS) -lm $(CRYPTO_LIBS) $(EXTRALIBS) $(LIBGLOBAL_LDA)
 
 radosgw_SOURCES = \
@@ -407,7 +406,7 @@ librbd_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0 \
 lib_LTLIBRARIES += librbd.la
 
 rados_SOURCES = rados.cc rados_import.cc rados_export.cc rados_sync.cc common/obj_bencher.cc
-rados_LDADD = libcls_lock_client.a $(builddir)/librados/librados.la $(LIBGLOBAL_LDA)
+rados_LDADD = $(builddir)/cls/lock/libcls_lock_client.a $(builddir)/librados/librados.la $(LIBGLOBAL_LDA)
 bin_PROGRAMS += rados
 
 if WITH_REST_BENCH
@@ -459,140 +458,6 @@ ceph_test_keys_CXXFLAGS += ${tcmalloc_safety_flags}
 ceph_test_keys_SOURCES += perfglue/heap_profiler.cc
 endif
 
-
-## rados object classes
-
-radoslibdir = $(libdir)/rados-classes
-radoslib_LTLIBRARIES =
-
-# hello world class
-libcls_hello_la_SOURCES = cls/hello/cls_hello.cc
-libcls_hello_la_CFLAGS = ${AM_CFLAGS}
-libcls_hello_la_CXXFLAGS= ${AM_CXXFLAGS}
-libcls_hello_la_LIBADD = $(PTHREAD_LIBS) $(EXTRALIBS)
-libcls_hello_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0 -export-symbols-regex '.*__cls_.*'
-
-radoslib_LTLIBRARIES += libcls_hello.la
-
-# rbd: rados block device class
-libcls_rbd_la_SOURCES = cls/rbd/cls_rbd.cc
-libcls_rbd_la_CFLAGS = ${AM_CFLAGS}
-libcls_rbd_la_CXXFLAGS= ${AM_CXXFLAGS}
-libcls_rbd_la_LIBADD = $(PTHREAD_LIBS) $(EXTRALIBS)
-libcls_rbd_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0 -export-symbols-regex '.*__cls_.*'
-
-radoslib_LTLIBRARIES += libcls_rbd.la
-
-# lock class
-libcls_lock_la_SOURCES = cls/lock/cls_lock.cc
-libcls_lock_la_CFLAGS = ${AM_CFLAGS}
-libcls_lock_la_CXXFLAGS= ${AM_CXXFLAGS}
-libcls_lock_la_LIBADD = $(PTHREAD_LIBS) $(EXTRALIBS)
-libcls_lock_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0 -export-symbols-regex '.*__cls_.*'
-radoslib_LTLIBRARIES += libcls_lock.la
-
-# refcount class
-libcls_refcount_la_SOURCES = \
-	cls/refcount/cls_refcount.cc \
-	cls/refcount/cls_refcount_ops.cc \
-	common/ceph_json.cc \
-	json_spirit/json_spirit_reader.cpp \
-	json_spirit/json_spirit_writer.cpp \
-	json_spirit/json_spirit_value.cpp
-libcls_refcount_la_CFLAGS = ${AM_CFLAGS}
-libcls_refcount_la_CXXFLAGS= ${AM_CXXFLAGS}
-libcls_refcount_la_LIBADD = $(PTHREAD_LIBS) $(EXTRALIBS)
-libcls_refcount_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0 -export-symbols-regex '.*__cls_.*'
-
-radoslib_LTLIBRARIES += libcls_refcount.la
-
-# version class
-libcls_version_la_SOURCES = cls/version/cls_version.cc
-libcls_version_la_CFLAGS = ${AM_CFLAGS}
-libcls_version_la_CXXFLAGS= ${AM_CXXFLAGS}
-libcls_version_la_LIBADD = $(PTHREAD_LIBS) $(EXTRALIBS)
-libcls_version_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0 -export-symbols-regex '.*__cls_.*'
-
-radoslib_LTLIBRARIES += libcls_version.la
-
-# log class
-libcls_log_la_SOURCES = cls/log/cls_log.cc
-libcls_log_la_CFLAGS = ${AM_CFLAGS}
-libcls_log_la_CXXFLAGS= ${AM_CXXFLAGS}
-libcls_log_la_LIBADD = $(PTHREAD_LIBS) $(EXTRALIBS)
-libcls_log_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0 -export-symbols-regex '.*__cls_.*'
-
-radoslib_LTLIBRARIES += libcls_log.la
-
-libcls_statelog_la_SOURCES = cls/statelog/cls_statelog.cc
-libcls_statelog_la_CFLAGS = ${AM_CFLAGS}
-libcls_statelog_la_CXXFLAGS= ${AM_CXXFLAGS}
-libcls_statelog_la_LIBADD = $(PTHREAD_LIBS) $(EXTRALIBS)
-libcls_statelog_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0 -export-symbols-regex '.*__cls_.*'
-
-radoslib_LTLIBRARIES += libcls_statelog.la
-
-# replica log class
-libcls_replica_log_la_SOURCES = cls/replica_log/cls_replica_log.cc
-libcls_replica_log_la_CFLAGS = ${AM_CFLAGS}
-libcls_replica_log_la_CXXFLAGS= ${AM_CXXFLAGS}
-libcls_replica_log_la_LIBADD = $(PTHREAD_LIBS) $(EXTRALIBS)
-libcls_replica_log_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0 -export-symbols-regex '.*__cls_.*'
-
-radoslib_LTLIBRARIES += libcls_replica_log.la
-
-# rgw: rados gateway
-libcls_rgw_la_SOURCES = \
-	cls/rgw/cls_rgw.cc \
-	cls/rgw/cls_rgw_ops.cc \
-	cls/rgw/cls_rgw_types.cc \
-	common/ceph_json.cc \
-	json_spirit/json_spirit_reader.cpp \
-	json_spirit/json_spirit_writer.cpp \
-	json_spirit/json_spirit_value.cpp
-libcls_rgw_la_CFLAGS = ${AM_CFLAGS}
-libcls_rgw_la_CXXFLAGS= ${AM_CXXFLAGS}
-libcls_rgw_la_LIBADD = $(PTHREAD_LIBS) $(EXTRALIBS)
-libcls_rgw_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0 -export-symbols-regex '.*__cls_.*'
-
-radoslib_LTLIBRARIES += libcls_rgw.la
-
-libcls_lock_client_a_SOURCES =  \
-	cls/lock/cls_lock_client.cc  \
-	cls/lock/cls_lock_types.cc \
-	cls/lock/cls_lock_ops.cc
-noinst_LIBRARIES += libcls_lock_client.a
-
-libcls_refcount_client_a_SOURCES =  \
-	cls/refcount/cls_refcount_client.cc \
-	cls/refcount/cls_refcount_ops.cc
-noinst_LIBRARIES += libcls_refcount_client.a
-
-libcls_version_client_a_SOURCES =  \
-	cls/version/cls_version_client.cc \
-	cls/version/cls_version_types.cc
-noinst_LIBRARIES += libcls_version_client.a
-
-libcls_log_client_a_SOURCES =  \
-	cls/log/cls_log_client.cc
-noinst_LIBRARIES += libcls_log_client.a
-
-libcls_statelog_client_a_SOURCES =  \
-	cls/statelog/cls_statelog_client.cc
-noinst_LIBRARIES += libcls_statelog_client.a
-
-libcls_replica_log_client_a_SOURCES = \
-	cls/replica_log/cls_replica_log_types.cc \
-	cls/replica_log/cls_replica_log_ops.cc \
-	cls/replica_log/cls_replica_log_client.cc
-noinst_LIBRARIES += libcls_replica_log_client.a
-
-libcls_rgw_client_a_SOURCES =  \
-	cls/rgw/cls_rgw_client.cc \
-	cls/rgw/cls_rgw_types.cc \
-	cls/rgw/cls_rgw_ops.cc
-noinst_LIBRARIES += libcls_rgw_client.a
-
 ## hadoop client
 if WITH_HADOOPCLIENT
 JAVA_BASE = /usr/lib/jvm/java-6-sun
@@ -620,17 +485,6 @@ libcephfs_jni_la_CXXFLAGS = ${AM_CXXFLAGS}
 libcephfs_jni_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0
 lib_LTLIBRARIES += libcephfs_jni.la
 endif
-
-## key_value_store classes
-
-# key_value_store: key value store class
-libcls_kvs_la_SOURCES = key_value_store/cls_kvs.cc
-libcls_kvs_la_CFLAGS = ${AM_CFLAGS}
-libcls_kvs_la_CXXFLAGS= ${AM_CXXFLAGS}
-libcls_kvs_la_LIBADD = $(PTHREAD_LIBS) $(EXTRALIBS)
-libcls_kvs_la_LDFLAGS = ${AM_LDFLAGS} -version-info 1:0:0 -export-symbols-regex '.*__cls_.*'
-
-radoslib_LTLIBRARIES += libcls_kvs.la
 
 ceph_test_rados_list_parallel_SOURCES = \
 	test/system/rados_list_parallel.cc \
@@ -948,20 +802,20 @@ ceph_test_cors_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_cors
 
 ceph_test_cls_rgw_meta_SOURCES = test/test_rgw_admin_meta.cc
-ceph_test_cls_rgw_meta_LDADD = $(builddir)/rgw/librgw.a ${UNITTEST_LDADD} ${UNITTEST_STATIC_LDADD} $(LIBGLOBAL_LDA) $(CRYPTO_LIBS) -lcurl -luuid -lexpat  $(builddir)/librados/librados.la libcls_version_client.a \
- libcls_log_client.a libcls_statelog_client.a libcls_refcount_client.a libcls_rgw_client.a libcls_lock_client.a
+ceph_test_cls_rgw_meta_LDADD = $(builddir)/rgw/librgw.a ${UNITTEST_LDADD} ${UNITTEST_STATIC_LDADD} $(LIBGLOBAL_LDA) $(CRYPTO_LIBS) -lcurl -luuid -lexpat  $(builddir)/librados/librados.la $(builddir)/cls/version/libcls_version_client.a \
+ $(builddir)/cls/log/libcls_log_client.a $(builddir)/cls/statelog/libcls_statelog_client.a $(builddir)/cls/refcount/libcls_refcount_client.a $(builddir)/cls/rgw/libcls_rgw_client.a $(builddir)/cls/lock/libcls_lock_client.a
 ceph_test_cls_rgw_meta_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_cls_rgw_meta
 
 ceph_test_cls_rgw_log_SOURCES = test/test_rgw_admin_log.cc
-ceph_test_cls_rgw_log_LDADD = $(builddir)/rgw/librgw.a ${UNITTEST_LDADD} ${UNITTEST_STATIC_LDADD} ${LIBGLOBAL_LDA} $(CRYPTO_LIBS) -lcurl -luuid -lexpat  $(builddir)/librados/librados.la libcls_version_client.a \
- libcls_log_client.a libcls_statelog_client.a libcls_refcount_client.a libcls_rgw_client.a libcls_lock_client.a
+ceph_test_cls_rgw_log_LDADD = $(builddir)/rgw/librgw.a ${UNITTEST_LDADD} ${UNITTEST_STATIC_LDADD} ${LIBGLOBAL_LDA} $(CRYPTO_LIBS) -lcurl -luuid -lexpat  $(builddir)/librados/librados.la $(builddir)/cls/version/libcls_version_client.a \
+ $(builddir)/cls/log/libcls_log_client.a $(builddir)/cls/statelog/libcls_statelog_client.a $(builddir)/cls/refcount/libcls_refcount_client.a $(builddir)/cls/rgw/libcls_rgw_client.a $(builddir)/cls/lock/libcls_lock_client.a
 ceph_test_cls_rgw_log_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_cls_rgw_log
 
 ceph_test_cls_rgw_opstate_SOURCES = test/test_rgw_admin_opstate.cc
-ceph_test_cls_rgw_opstate_LDADD = $(builddir)/rgw/librgw.a ${UNITTEST_LDADD} ${UNITTEST_STATIC_LDADD} ${LIBGLOBAL_LDA} $(CRYPTO_LIBS) -lcurl -luuid -lexpat  $(builddir)/librados/librados.la libcls_version_client.a \
- libcls_log_client.a libcls_statelog_client.a libcls_refcount_client.a libcls_rgw_client.a libcls_lock_client.a
+ceph_test_cls_rgw_opstate_LDADD = $(builddir)/rgw/librgw.a ${UNITTEST_LDADD} ${UNITTEST_STATIC_LDADD} ${LIBGLOBAL_LDA} $(CRYPTO_LIBS) -lcurl -luuid -lexpat  $(builddir)/librados/librados.la $(builddir)/cls/version/libcls_version_client.a \
+ $(builddir)/cls/log/libcls_log_client.a $(builddir)/cls/statelog/libcls_statelog_client.a $(builddir)/cls/refcount/libcls_refcount_client.a $(builddir)/cls/rgw/libcls_rgw_client.a $(builddir)/cls/lock/libcls_lock_client.a
 ceph_test_cls_rgw_opstate_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_cls_rgw_opstate
 endif
@@ -988,38 +842,38 @@ bin_DEBUGPROGRAMS += ceph_test_cls_rbd
 
 ceph_test_cls_refcount_SOURCES = test/cls_refcount/test_cls_refcount.cc \
 	test/librados/test.cc
-ceph_test_cls_refcount_LDADD = $(builddir)/librados/librados.la libcls_refcount_client.a ${UNITTEST_STATIC_LDADD}
+ceph_test_cls_refcount_LDADD = $(builddir)/librados/librados.la $(builddir)/cls/refcount/libcls_refcount_client.a ${UNITTEST_STATIC_LDADD}
 ceph_test_cls_refcount_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_cls_refcount
 
 ceph_test_cls_version_SOURCES = test/cls_version/test_cls_version.cc \
 	test/librados/test.cc
-ceph_test_cls_version_LDADD = $(builddir)/librados/librados.la libcls_version_client.a ${UNITTEST_STATIC_LDADD}
+ceph_test_cls_version_LDADD = $(builddir)/librados/librados.la $(builddir)/cls/version/libcls_version_client.a ${UNITTEST_STATIC_LDADD}
 ceph_test_cls_version_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_cls_version
 
 ceph_test_cls_log_SOURCES = test/cls_log/test_cls_log.cc \
 	test/librados/test.cc
-ceph_test_cls_log_LDADD = $(builddir)/librados/librados.la libcls_log_client.a ${UNITTEST_STATIC_LDADD} ${LIBGLOBAL_LDA}
+ceph_test_cls_log_LDADD = $(builddir)/librados/librados.la $(builddir)/cls/log/libcls_log_client.a ${UNITTEST_STATIC_LDADD} ${LIBGLOBAL_LDA}
 ceph_test_cls_log_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_cls_log
 
 ceph_test_cls_statelog_SOURCES = test/cls_statelog/test_cls_statelog.cc \
 	test/librados/test.cc
-ceph_test_cls_statelog_LDADD = $(builddir)/librados/librados.la libcls_statelog_client.a ${UNITTEST_STATIC_LDADD} ${LIBGLOBAL_LDA}
+ceph_test_cls_statelog_LDADD = $(builddir)/librados/librados.la $(builddir)/cls/statelog/libcls_statelog_client.a ${UNITTEST_STATIC_LDADD} ${LIBGLOBAL_LDA}
 ceph_test_cls_statelog_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_cls_statelog
 ceph_test_cls_replica_log_SOURCES = \
 	test/cls_replica_log/test_cls_replica_log.cc \
 	test/librados/test.cc
 ceph_test_cls_replica_log_LDADD = $(builddir)/librados/librados.la \
-	libcls_replica_log_client.a ${UNITTEST_STATIC_LDADD} ${LIBGLOBAL_LDA}
+	$(builddir)/cls/replica_log/libcls_replica_log_client.a ${UNITTEST_STATIC_LDADD} ${LIBGLOBAL_LDA}
 ceph_test_cls_replica_log_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_cls_replica_log
 
 ceph_test_cls_lock_SOURCES = test/cls_lock/test_cls_lock.cc test/librados/test.cc
 ceph_test_cls_lock_LDFLAGS = ${AM_LDFLAGS}
-ceph_test_cls_lock_LDADD =  libcls_lock_client.a $(builddir)/librados/librados.la ${UNITTEST_STATIC_LDADD}
+ceph_test_cls_lock_LDADD =  $(builddir)/cls/lock/libcls_lock_client.a $(builddir)/librados/librados.la ${UNITTEST_STATIC_LDADD}
 ceph_test_cls_lock_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_cls_lock
 
@@ -1032,7 +886,7 @@ if WITH_RADOSGW
 
 ceph_test_cls_rgw_SOURCES = test/cls_rgw/test_cls_rgw.cc \
 	test/librados/test.cc
-ceph_test_cls_rgw_LDADD = $(builddir)/librados/librados.la libcls_rgw_client.a ${UNITTEST_STATIC_LDADD}
+ceph_test_cls_rgw_LDADD = $(builddir)/librados/librados.la $(builddir)/cls/rgw/libcls_rgw_client.a ${UNITTEST_STATIC_LDADD}
 ceph_test_cls_rgw_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_cls_rgw
 
@@ -1406,28 +1260,6 @@ noinst_HEADERS = \
 	bash_completion/radosgw-admin\
 	cls_acl.cc\
 	cls_crypto.cc\
-	cls/lock/cls_lock_types.h\
-	cls/lock/cls_lock_ops.h\
-	cls/lock/cls_lock_client.h\
-	cls/rbd/cls_rbd.h\
-	cls/rbd/cls_rbd_client.h\
-	cls/refcount/cls_refcount_ops.h\
-	cls/refcount/cls_refcount_client.h\
-	cls/version/cls_version_types.h\
-	cls/version/cls_version_ops.h\
-	cls/version/cls_version_client.h\
-	cls/log/cls_log_types.h\
-	cls/log/cls_log_ops.h\
-	cls/log/cls_log_client.h\
-	cls/statelog/cls_statelog_types.h\
-	cls/statelog/cls_statelog_ops.h\
-	cls/statelog/cls_statelog_client.h\
-	cls/replica_log/cls_replica_log_types.h\
-	cls/replica_log/cls_replica_log_ops.h\
-	cls/replica_log/cls_replica_log_client.h\
-	cls/rgw/cls_rgw_client.h\
-	cls/rgw/cls_rgw_ops.h\
-	cls/rgw/cls_rgw_types.h\
 	crush/CrushCompiler.h\
 	crush/CrushTester.h\
         crush/CrushWrapper.h\

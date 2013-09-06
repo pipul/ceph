@@ -1,0 +1,1 @@
+radoslibdir = $(libdir)/rados-classes
