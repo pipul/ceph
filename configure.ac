@@ -583,6 +583,7 @@ AC_CONFIG_HEADERS([src/acconfig.h])
 AC_CONFIG_FILES([Makefile
 	src/Makefile
 	src/crush/Makefile
+	src/json_spirit/Makefile
 	src/common/Makefile
 	src/os/Makefile
 	src/mon/Makefile

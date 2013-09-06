@@ -1,8 +1,8 @@
 include $(top_srcdir)/src/common.mk
 
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = crush common os mon osd osdc librados mds client global cls key_value_store librbd ocf
-DIST_SUBDIRS = crush common os mon osd osdc librados mds client global cls key_value_store librbd gtest ocf libs3 java test
+SUBDIRS = crush json_spirit common os mon osd osdc librados mds client global cls key_value_store librbd ocf
+DIST_SUBDIRS = crush json_spirit common os mon osd osdc librados mds client global cls key_value_store librbd gtest ocf libs3 java test
 
 if WITH_RADOSGW
 SUBDIRS += rgw
@@ -1264,16 +1264,6 @@ noinst_HEADERS = \
 	librbd/SnapInfo.h\
 	librbd/WatchCtx.h\
 	logrotate.conf\
-	json_spirit/json_spirit.h\
-	json_spirit/json_spirit_error_position.h\
-	json_spirit/json_spirit_reader.h\
-	json_spirit/json_spirit_reader_template.h\
-	json_spirit/json_spirit_stream_reader.h\
-	json_spirit/json_spirit_utils.h\
-	json_spirit/json_spirit_value.h\
-	json_spirit/json_spirit_writer.h\
-	json_spirit/json_spirit_writer_options.h\
-	json_spirit/json_spirit_writer_template.h\
 	key_value_store/key_value_structure.h\
 	key_value_store/kv_flat_btree_async.h\
 	key_value_store/kvs_arg_types.h\

@@ -171,9 +171,6 @@ libcommon_la_SOURCES = \
 	$(top_srcdir)/src/auth/Crypto.cc \
 	$(top_srcdir)/src/auth/KeyRing.cc \
 	$(top_srcdir)/src/auth/RotatingKeyRing.cc \
-	$(top_srcdir)/src/json_spirit/json_spirit_reader.cpp \
-	$(top_srcdir)/src/json_spirit/json_spirit_writer.cpp \
-	$(top_srcdir)/src/json_spirit/json_spirit_value.cpp \
 	$(top_srcdir)/src/log/Log.cc \
 	$(top_srcdir)/src/log/SubsystemMap.cc \
 	$(top_srcdir)/src/mon/MonCap.cc \
@@ -205,4 +202,7 @@ libcommon_la_SOURCES += $(top_srcdir)/src/perfglue/disabled_stubs.cc
 endif
 
 libcommon_la_CFLAGS = $(CRYPTO_CFLAGS) $(AM_CFLAGS)
-libcommon_la_LIBADD = $(top_builddir)/src/crush/libcrush.la libcrc.la -lrt -luuid
+libcommon_la_LIBADD = \
+	$(top_builddir)/src/crush/libcrush.la \
+	$(top_builddir)/src/json_spirit/libjson_spirit.la \
+	libcrc.la -lrt -luuid
