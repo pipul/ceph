@@ -1,8 +1,8 @@
 include $(top_srcdir)/src/common.mk
 
 AUTOMAKE_OPTIONS = gnu
-SUBDIRS = common os osd librados ocf java
-DIST_SUBDIRS = common os osd librados gtest ocf libs3 java
+SUBDIRS = common os osd librados mds ocf java
+DIST_SUBDIRS = common os osd librados mds gtest ocf libs3 java
 
 EXTRA_DIST = \
 	libs3/COPYING \
@@ -82,7 +82,7 @@ endif
 
 # mds
 ceph_mds_SOURCES = ceph_mds.cc
-ceph_mds_LDADD = libmds.a libosdc.la $(LIBGLOBAL_LDA)
+ceph_mds_LDADD = $(builddir)/mds/libmds.a libosdc.la $(LIBGLOBAL_LDA)
 bin_PROGRAMS += ceph-mds
 ceph_mds_CXXFLAGS = ${AM_CXXFLAGS}
 
@@ -135,7 +135,7 @@ ceph_dencoder_LDADD = $(LIBGLOBAL_LDA) libcls_lock_client.a \
 			  libcls_rgw_client.a \
 			  libcls_replica_log_client.a \
 			  libcls_refcount_client.a \
-			  $(builddir)/osd/libosd.la libmds.a libosdc.la $(builddir)/os/libos.la libmon.a
+			  $(builddir)/osd/libosd.la $(builddir)/mds/libmds.a libosdc.la $(builddir)/os/libos.la libmon.a
 bin_PROGRAMS += ceph-dencoder
 
 mount_ceph_SOURCES = mount/mount.ceph.c common/armor.c common/safe_io.c common/secret.c include/addr_parsing.c
@@ -1438,39 +1438,6 @@ libmon_a_SOURCES = \
 libmon_a_CXXFLAGS= ${AM_CXXFLAGS}
 noinst_LIBRARIES += libmon.a
 
-libmds_a_SOURCES = \
-	mds/Anchor.cc \
-	mds/Capability.cc \
-	mds/Dumper.cc \
-	mds/Resetter.cc \
-	mds/MDS.cc \
-	mds/flock.cc \
-	mds/locks.c \
-	mds/journal.cc \
-	mds/Server.cc \
-	mds/Mutation.cc \
-	mds/MDCache.cc \
-	mds/Locker.cc \
-	mds/Migrator.cc \
-	mds/MDBalancer.cc \
-	mds/CDentry.cc \
-	mds/CDir.cc \
-	mds/CInode.cc \
-	mds/LogEvent.cc \
-	mds/MDSTable.cc \
-	mds/InoTable.cc \
-	mds/MDSTableClient.cc \
-	mds/MDSTableServer.cc \
-	mds/AnchorServer.cc \
-	mds/AnchorClient.cc \
-	mds/SnapRealm.cc \
-	mds/SnapServer.cc \
-	mds/snap.cc \
-	mds/SessionMap.cc \
-	mds/MDLog.cc \
-	osdc/Journaler.cc
-noinst_LIBRARIES += libmds.a
-
 libosdc_la_SOURCES = \
 	osdc/Objecter.cc \
 	osdc/ObjectCacher.cc \
@@ -1675,59 +1642,6 @@ noinst_HEADERS = \
 	log/EntryQueue.h\
 	log/Log.h\
 	log/SubsystemMap.h\
-	mds/inode_backtrace.h\
-	mds/flock.h\
-	mds/locks.c\
-	mds/locks.h\
-        mds/Anchor.h\
-        mds/AnchorClient.h\
-        mds/AnchorServer.h\
-        mds/CDentry.h\
-        mds/CDir.h\
-        mds/CInode.h\
-        mds/Capability.h\
-	mds/Dumper.h\
-        mds/InoTable.h\
-        mds/LocalLock.h\
-        mds/Locker.h\
-        mds/LogEvent.h\
-        mds/LogSegment.h\
-        mds/MDBalancer.h\
-        mds/MDCache.h\
-        mds/MDLog.h\
-        mds/MDS.h\
-        mds/MDSMap.h\
-	mds/MDSTable.h\
-	mds/MDSTableServer.h\
-	mds/MDSTableClient.h\
-	mds/Mutation.h\
-        mds/Migrator.h\
-	mds/Resetter.h\
-        mds/ScatterLock.h\
-        mds/Server.h\
-        mds/SessionMap.h\
-        mds/SimpleLock.h\
-        mds/SnapClient.h\
-	mds/SnapRealm.h\
-        mds/SnapServer.h\
-        mds/events/ECommitted.h\
-        mds/events/EExport.h\
-        mds/events/EFragment.h\
-        mds/events/EImportFinish.h\
-        mds/events/EImportStart.h\
-        mds/events/EMetaBlob.h\
-        mds/events/EOpen.h\
-	mds/events/EResetJournal.h\
-        mds/events/ESession.h\
-        mds/events/ESessions.h\
-        mds/events/ESlaveUpdate.h\
-        mds/events/ESubtreeMap.h\
-	mds/events/ETableClient.h\
-	mds/events/ETableServer.h\
-        mds/events/EUpdate.h\
-        mds/mds_table_types.h\
-        mds/mdstypes.h\
-        mds/snap.h\
         messages/MAuth.h\
         messages/MAuthReply.h\
 	messages/MCacheExpire.h\
