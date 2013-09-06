@@ -608,6 +608,7 @@ AC_CONFIG_FILES([Makefile
 	src/mds/Makefile
 	src/osdc/Makefile
 	src/librados/Makefile
+	src/rgw/Makefile
 	src/ocf/Makefile
 	src/ocf/ceph
 	src/ocf/rbd

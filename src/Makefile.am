@@ -4,6 +4,11 @@ AUTOMAKE_OPTIONS = gnu
 SUBDIRS = common os mon osd osdc librados mds ocf java
 DIST_SUBDIRS = common os mon osd osdc librados mds gtest ocf libs3 java
 
+if WITH_RADOSGW
+SUBDIRS += rgw
+DIST_SUBDIRS += rgw
+endif
+
 EXTRA_DIST = \
 	libs3/COPYING \
 	libs3/ChangeLog \
@@ -332,45 +337,9 @@ bin_DEBUGPROGRAMS += ceph_test_signal_handlers
 if WITH_RADOSGW
 
 # rgw
-librgw_a_SOURCES =  \
-	rgw/librgw.cc \
-	rgw/rgw_acl.cc \
-	rgw/rgw_acl_s3.cc \
-	rgw/rgw_acl_swift.cc \
-	rgw/rgw_client_io.cc \
-	rgw/rgw_fcgi.cc \
-	rgw/rgw_xml.cc \
-	rgw/rgw_usage.cc \
-	rgw/rgw_json_enc.cc \
-	rgw/rgw_user.cc \
-	rgw/rgw_bucket.cc\
-        rgw/rgw_tools.cc \
-	rgw/rgw_rados.cc \
-        rgw/rgw_http_client.cc \
-        rgw/rgw_rest_client.cc \
-	rgw/rgw_rest_conn.cc \
-	rgw/rgw_op.cc \
-	rgw/rgw_common.cc \
-	rgw/rgw_cache.cc \
-	rgw/rgw_formats.cc \
-	rgw/rgw_log.cc \
-	rgw/rgw_multi.cc \
-	rgw/rgw_policy_s3.cc \
-	rgw/rgw_gc.cc \
-	rgw/rgw_multi_del.cc \
-	rgw/rgw_env.cc \
-	rgw/rgw_cors.cc \
-	rgw/rgw_cors_s3.cc \
-        rgw/rgw_auth_s3.cc \
-	rgw/rgw_metadata.cc \
-	rgw/rgw_replica_log.cc \
-	rgw/rgw_keystone.cc
-librgw_a_CFLAGS = ${CRYPTO_CFLAGS} ${AM_CFLAGS}
-librgw_a_CXXFLAGS = -Woverloaded-virtual ${AM_CXXFLAGS}
-noinst_LIBRARIES += librgw.a
 
 my_radosgw_ldadd = \
-       librgw.a $(builddir)/librados/librados.la libcls_rgw_client.a libcls_log_client.a \
+       $(builddir)/rgw/librgw.a $(builddir)/librados/librados.la libcls_rgw_client.a libcls_log_client.a \
        libcls_statelog_client.a libcls_replica_log_client.a libcls_lock_client.a \
        libcls_refcount_client.a libcls_version_client.a -lcurl -lexpat \
        $(PTHREAD_LIBS) -lm $(CRYPTO_LIBS) $(EXTRALIBS) $(LIBGLOBAL_LDA)
@@ -983,24 +952,24 @@ check_PROGRAMS += unittest_texttable
 
 if WITH_RADOSGW
 ceph_test_cors_SOURCES = test/test_cors.cc
-ceph_test_cors_LDADD = $(builddir)/librados/librados.la librgw.a $(LIBGLOBAL_LDA) ${UNITTEST_LDADD} ${UNITTEST_STATIC_LDADD} -lcurl -luuid -lexpat
+ceph_test_cors_LDADD = $(builddir)/librados/librados.la $(builddir)/rgw/librgw.a $(LIBGLOBAL_LDA) ${UNITTEST_LDADD} ${UNITTEST_STATIC_LDADD} -lcurl -luuid -lexpat
 ceph_test_cors_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_cors
 
 ceph_test_cls_rgw_meta_SOURCES = test/test_rgw_admin_meta.cc
-ceph_test_cls_rgw_meta_LDADD = librgw.a ${UNITTEST_LDADD} ${UNITTEST_STATIC_LDADD} $(LIBGLOBAL_LDA) $(CRYPTO_LIBS) -lcurl -luuid -lexpat  $(builddir)/librados/librados.la libcls_version_client.a \
+ceph_test_cls_rgw_meta_LDADD = $(builddir)/rgw/librgw.a ${UNITTEST_LDADD} ${UNITTEST_STATIC_LDADD} $(LIBGLOBAL_LDA) $(CRYPTO_LIBS) -lcurl -luuid -lexpat  $(builddir)/librados/librados.la libcls_version_client.a \
  libcls_log_client.a libcls_statelog_client.a libcls_refcount_client.a libcls_rgw_client.a libcls_lock_client.a
 ceph_test_cls_rgw_meta_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_cls_rgw_meta
 
 ceph_test_cls_rgw_log_SOURCES = test/test_rgw_admin_log.cc
-ceph_test_cls_rgw_log_LDADD = librgw.a ${UNITTEST_LDADD} ${UNITTEST_STATIC_LDADD} ${LIBGLOBAL_LDA} $(CRYPTO_LIBS) -lcurl -luuid -lexpat  $(builddir)/librados/librados.la libcls_version_client.a \
+ceph_test_cls_rgw_log_LDADD = $(builddir)/rgw/librgw.a ${UNITTEST_LDADD} ${UNITTEST_STATIC_LDADD} ${LIBGLOBAL_LDA} $(CRYPTO_LIBS) -lcurl -luuid -lexpat  $(builddir)/librados/librados.la libcls_version_client.a \
  libcls_log_client.a libcls_statelog_client.a libcls_refcount_client.a libcls_rgw_client.a libcls_lock_client.a
 ceph_test_cls_rgw_log_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_cls_rgw_log
 
 ceph_test_cls_rgw_opstate_SOURCES = test/test_rgw_admin_opstate.cc
-ceph_test_cls_rgw_opstate_LDADD = librgw.a ${UNITTEST_LDADD} ${UNITTEST_STATIC_LDADD} ${LIBGLOBAL_LDA} $(CRYPTO_LIBS) -lcurl -luuid -lexpat  $(builddir)/librados/librados.la libcls_version_client.a \
+ceph_test_cls_rgw_opstate_LDADD = $(builddir)/rgw/librgw.a ${UNITTEST_LDADD} ${UNITTEST_STATIC_LDADD} ${LIBGLOBAL_LDA} $(CRYPTO_LIBS) -lcurl -luuid -lexpat  $(builddir)/librados/librados.la libcls_version_client.a \
  libcls_log_client.a libcls_statelog_client.a libcls_refcount_client.a libcls_rgw_client.a libcls_lock_client.a
 ceph_test_cls_rgw_opstate_CXXFLAGS = ${AM_CXXFLAGS} ${UNITTEST_CXXFLAGS}
 bin_DEBUGPROGRAMS += ceph_test_cls_rgw_opstate
@@ -1728,54 +1697,6 @@ noinst_HEADERS = \
 	objclass/objclass.h\
         perfglue/cpu_profiler.h\
         perfglue/heap_profiler.h\
-	rgw/logrotate.conf\
-	rgw/rgw_acl.h\
-	rgw/rgw_acl_s3.h\
-	rgw/rgw_acl_swift.h\
-	rgw/rgw_client_io.h\
-	rgw/rgw_fcgi.h\
-	rgw/rgw_xml.h\
-	rgw/rgw_cache.h\
-	rgw/rgw_common.h\
-	rgw/rgw_cors.h\
-	rgw/rgw_cors_s3.h\
-	rgw/rgw_cors_swift.h\
-	rgw/rgw_string.h\
-	rgw/rgw_formats.h\
-	rgw/rgw_http_errors.h\
-	rgw/rgw_log.h\
-	rgw/rgw_multi.h\
-	rgw/rgw_policy_s3.h\
-	rgw/rgw_gc.h\
-	rgw/rgw_metadata.h\
-	rgw/rgw_multi_del.h\
-	rgw/rgw_op.h\
-	rgw/rgw_http_client.h\
-	rgw/rgw_swift.h\
-	rgw/rgw_swift_auth.h\
-	rgw/rgw_rados.h\
-	rgw/rgw_replica_log.h \
-	rgw/rgw_resolve.h\
-	rgw/rgw_rest.h\
-	rgw/rgw_rest_swift.h\
-	rgw/rgw_rest_s3.h\
-	rgw/rgw_auth_s3.h\
-	rgw/rgw_rest_admin.h\
-	rgw/rgw_rest_usage.h\
-	rgw/rgw_rest_user.h\
-	rgw/rgw_rest_bucket.h\
-	rgw/rgw_rest_client.h\
-	rgw/rgw_rest_conn.h\
-	rgw/rgw_tools.h\
-	rgw/rgw_rest_metadata.h\
-	rgw/rgw_rest_log.h\
-	rgw/rgw_rest_opstate.h\
-	rgw/rgw_rest_replica_log.h\
-	rgw/rgw_rest_config.h\
-	rgw/rgw_usage.h\
-	rgw/rgw_user.h\
-	rgw/rgw_bucket.h\
-	rgw/rgw_keystone.h\
         sample.ceph.conf\
 	tools/common.h\
 	test/osd/RadosModel.h\
