@@ -272,6 +272,11 @@ unittest_sharedptr_registry_CXXFLAGS = $(UNITTEST_CXXFLAGS)
 unittest_sharedptr_registry_LDADD = $(UNITTEST_LDADD) $(CEPH_GLOBAL)
 check_PROGRAMS += unittest_sharedptr_registry
 
+unittest_get_command_descriptions_SOURCES = test/common/test_get_command_descriptions.cc
+unittest_get_command_descriptions_CXXFLAGS = $(UNITTEST_CXXFLAGS)
+unittest_get_command_descriptions_LDADD = $(LIBMON) $(LIBCOMMON) $(UNITTEST_LDADD) $(CEPH_GLOBAL)
+check_PROGRAMS += unittest_get_command_descriptions
+
 unittest_util_SOURCES = test/common/test_util.cc
 unittest_util_CXXFLAGS = $(UNITTEST_CXXFLAGS)
 unittest_util_LDADD = $(LIBCOMMON) -lm $(UNITTEST_LDADD) $(CRYPTO_LIBS) $(EXTRALIBS)
